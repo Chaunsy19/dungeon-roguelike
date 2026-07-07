@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://du1w7ue4b0875"]
+
+[ext_resource type="Script" uid="uid://cre1673wjrse1" path="res://Scripts/light_source.gd" id="1_light_script"]
+[ext_resource type="Texture2D" uid="uid://cpfop77y1eeuv" path="res://assets/lights/radial_light.png" id="2_light_texture"]
+
+[node name="LightSource" type="Node2D" unique_id=1856836753]
+script = ExtResource("1_light_script")
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=1518968782]
+color = Color(1, 0.72, 0.38, 1)
+energy = 1.4
+shadow_enabled = true
+texture = ExtResource("2_light_texture")
+texture_scale = 1.1

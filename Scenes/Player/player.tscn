@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://bkj2r1q2y8sdd"]
+
+[ext_resource type="Script" uid="uid://cc23p0pxd2tek" path="res://Scripts/player.gd" id="1_cvnsp"]
+[ext_resource type="Texture2D" uid="uid://vi1ndfuop4x5" path="res://assets/player/idle_r0_0.png" id="2_6t5aa"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_player_preview"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_6t5aa")
+}],
+"loop": 1,
+"name": &"idle_down",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bhunq"]
+size = Vector2(14, 18)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bhunq"]
+radius = 48.0
+
+[node name="Player" type="CharacterBody2D" unique_id=115543656]
+collision_mask = 6
+script = ExtResource("1_cvnsp")
+speed = 80.0
+acceleration = 1200.0
+movement_animation_min_speed_scale = 0.15
+movement_animation_max_speed_scale = 0.5
+attack_range = 45.0
+attack_arc_degrees = 90.0
+health_regen_per_constitution_level = 0.5
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=854958402]
+light_mask = 5
+z_index = 1
+position = Vector2(0, -16)
+sprite_frames = SubResource("SpriteFrames_player_preview")
+animation = &"idle_down"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1326241679]
+position = Vector2(0, 7)
+shape = SubResource("RectangleShape2D_bhunq")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1396922154]
+zoom = Vector2(2, 2)
+
+[node name="InteractionArea" type="Area2D" parent="." unique_id=1964554832]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea" unique_id=396597521]
+shape = SubResource("CircleShape2D_bhunq")

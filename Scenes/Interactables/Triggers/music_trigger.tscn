@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cjlpixpfoc587"]
+
+[ext_resource type="Script" uid="uid://csx1p41u25p64" path="res://Scripts/music_trigger.gd" id="1_j0gc7"]
+[ext_resource type="AudioStream" uid="uid://brvuve3v4v72b" path="res://assets/audio/leberch-psychological-horror-520373.mp3" id="2_n4825"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_music_trigger"]
+radius = 96.0
+
+[node name="MusicTrigger" type="Area2D" unique_id=1865386329]
+collision_layer = 0
+script = ExtResource("1_j0gc7")
+music_stream = ExtResource("2_n4825")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=25352707]
+shape = SubResource("CircleShape2D_music_trigger")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=869337826]
+stream = ExtResource("2_n4825")
+volume_db = -8.0
