@@ -76,6 +76,7 @@ var hunger_icon: TextureRect
 var health_icon: TextureRect
 var inventory_list: GridContainer
 var equipment_slots: GridContainer
+var menu: Control
 var item_action_menu: PopupMenu
 var message_label: Label
 
@@ -91,6 +92,7 @@ func _ready():
 	berries_label = get_tree().current_scene.get_node_or_null("UI/BerriesLabel")
 	hunger_icon = get_tree().current_scene.get_node_or_null("UI/HungerIcon")
 	health_icon = get_tree().current_scene.get_node_or_null("UI/HealthIcon")
+	menu = get_tree().current_scene.get_node_or_null("UI/Menu")
 	inventory_list = get_tree().current_scene.get_node_or_null("UI/Menu/MenuLayout/ContentPanel/Content/InventoryPage/InventoryList")
 	equipment_slots = get_tree().current_scene.get_node_or_null("UI/Menu/MenuLayout/ContentPanel/Content/EquipmentPanel/EquipmentSlots")
 	item_action_menu = get_tree().current_scene.get_node_or_null("UI/ItemActionMenu")
@@ -547,6 +549,7 @@ func update_inventory_list():
 		return
 
 	for child in inventory_list.get_children():
+		inventory_list.remove_child(child)
 		child.queue_free()
 
 	var items := []
@@ -572,6 +575,8 @@ func update_inventory_list():
 		else:
 			add_inventory_slot("", "Empty inventory slot", "")
 
+	request_menu_fit_to_content()
+
 func add_inventory_slot(button_text: String, tooltip: String, item_name: String):
 	var button := Button.new()
 	button.set_script(INVENTORY_SLOT_BUTTON_SCRIPT)
@@ -587,6 +592,7 @@ func setup_equipment_slots():
 		equipment[slot_type] = ""
 
 	for child in equipment_slots.get_children():
+		equipment_slots.remove_child(child)
 		child.queue_free()
 
 	for slot_type in EQUIPMENT_SLOT_LAYOUT:
@@ -594,6 +600,8 @@ func setup_equipment_slots():
 			add_equipment_spacer()
 		else:
 			add_equipment_slot(slot_type)
+
+	request_menu_fit_to_content()
 
 func add_equipment_slot(slot_type: String):
 	var button := Button.new()
@@ -622,6 +630,15 @@ func update_equipment_slots():
 
 		if child.has_method("update_text"):
 			child.update_text(equipped_item)
+
+	request_menu_fit_to_content()
+
+func request_menu_fit_to_content():
+	if menu == null:
+		return
+
+	if menu.has_method("request_fit_to_content"):
+		menu.call("request_fit_to_content")
 
 func get_inventory_slot_count() -> int:
 	var bag_item := ""

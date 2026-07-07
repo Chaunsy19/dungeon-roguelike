@@ -1303,14 +1303,11 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Menu" type="PanelContainer" parent="UI" unique_id=1565357127]
-custom_minimum_size = Vector2(520, 300)
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -520.0
-offset_top = -300.0
 grow_horizontal = 0
 grow_vertical = 0
 script = ExtResource("6_snpdt")
@@ -1320,7 +1317,6 @@ layout_mode = 2
 
 [node name="ContentPanel" type="PanelContainer" parent="UI/Menu/MenuLayout" unique_id=483631874]
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="Content" type="HBoxContainer" parent="UI/Menu/MenuLayout/ContentPanel" unique_id=1117246105]
 layout_mode = 2
@@ -1336,7 +1332,6 @@ Defense: 0"
 
 [node name="EquipmentPanel" type="VBoxContainer" parent="UI/Menu/MenuLayout/ContentPanel/Content" unique_id=46808741]
 visible = false
-custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 
 [node name="EquipmentTitle" type="Label" parent="UI/Menu/MenuLayout/ContentPanel/Content/EquipmentPanel" unique_id=330548056]

@@ -1,10 +1,7 @@
 extends PanelContainer
 
-const OPEN_HEIGHT := 300.0
-const CLOSED_HEIGHT := 36.0
-const MENU_WIDTH := 520.0
-
 var active_page: Control = null
+var fit_request_pending := false
 
 @onready var content_panel: Control = $MenuLayout/ContentPanel
 @onready var character_page: Control = $MenuLayout/ContentPanel/Content/CharacterPage
@@ -25,10 +22,9 @@ func _ready():
 	anchor_top = 1.0
 	anchor_right = 1.0
 	anchor_bottom = 1.0
-	offset_left = -MENU_WIDTH
 	offset_right = 0.0
 	offset_bottom = 0.0
-	custom_minimum_size = Vector2(MENU_WIDTH, OPEN_HEIGHT)
+	custom_minimum_size = Vector2.ZERO
 
 	disable_button_focus()
 
@@ -40,6 +36,7 @@ func _ready():
 	reload_button.pressed.connect(reload_game)
 
 	hide_all_pages()
+	request_fit_to_content()
 
 func toggle_character_page():
 	toggle_page(character_page)
@@ -60,6 +57,8 @@ func toggle_page(page: Control):
 
 		if not equipment_panel.visible:
 			hide_all_pages()
+		else:
+			request_fit_to_content()
 
 		return
 
@@ -67,16 +66,18 @@ func toggle_page(page: Control):
 	content_panel.visible = true
 	page.visible = true
 	active_page = page
-	set_menu_height(OPEN_HEIGHT)
+	request_fit_to_content()
 
 func toggle_equipment_panel():
 	equipment_panel.visible = not equipment_panel.visible
 
 	if equipment_panel.visible:
 		content_panel.visible = true
-		set_menu_height(OPEN_HEIGHT)
 	elif active_page == null:
 		hide_all_pages()
+		return
+
+	request_fit_to_content()
 
 func hide_content_pages():
 	character_page.visible = false
@@ -89,11 +90,29 @@ func hide_all_pages():
 	hide_content_pages()
 	equipment_panel.visible = false
 	content_panel.visible = false
-	set_menu_height(CLOSED_HEIGHT)
+	request_fit_to_content()
 
-func set_menu_height(height: float):
-	offset_top = -height
-	custom_minimum_size = Vector2(MENU_WIDTH, height)
+func request_fit_to_content():
+	if fit_request_pending:
+		return
+
+	fit_request_pending = true
+	call_deferred("fit_to_content")
+
+func fit_to_content():
+	fit_request_pending = false
+
+	custom_minimum_size = Vector2.ZERO
+
+	var menu_size := get_combined_minimum_size()
+	if menu_size.x <= 0 or menu_size.y <= 0:
+		return
+
+	size = menu_size
+	offset_left = -menu_size.x
+	offset_top = -menu_size.y
+	offset_right = 0.0
+	offset_bottom = 0.0
 
 func disable_button_focus():
 	character_button.focus_mode = Control.FOCUS_NONE
