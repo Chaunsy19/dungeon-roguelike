@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bojdken3h3j12"
-path="res://.godot/imported/DamagedSack.png-f5b732559fc4ab29ce14422fff1f4596.ctex"
+uid="uid://bjkrjfokmtna6"
+path="res://.godot/imported/BentLockpick.png-d70e9ec3febc924e672cee7ba2fbd55d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Sprites/Items/DamagedSack.png"
-dest_files=["res://.godot/imported/DamagedSack.png-f5b732559fc4ab29ce14422fff1f4596.ctex"]
+source_file="res://assets/Sprites/Items/Tools/Consumable/BentLockpick.png"
+dest_files=["res://.godot/imported/BentLockpick.png-d70e9ec3febc924e672cee7ba2fbd55d.ctex"]
 
 [params]
 

@@ -3,6 +3,7 @@ extends RefCounted
 const TAG_EDIBLE := "Edible"
 const TAG_EQUIPMENT := "Equipment"
 const TAG_FIRESTARTER := "Firestarter"
+const TAG_LOCKPICK := "Lockpick"
 
 # Add new items here. The item key, like "berries", is what code and save data should use.
 const ITEMS := {
@@ -11,7 +12,7 @@ const ITEMS := {
 		"inventory_name": "Berries",
 		"inventory_tooltip": "Edible",
 		"examine_text": "Small wild berries. They restore hunger when eaten.",
-		"icon_path": "res://assets/Sprites/Items/BerryIcon.png",
+		"icon_path": "res://assets/Sprites/Items/Consumable/BerryIcon.png",
 		"inventory_sort_order": 10,
 		"tags": {
 			TAG_EDIBLE: {
@@ -24,7 +25,7 @@ const ITEMS := {
 		"inventory_name": "Wood",
 		"inventory_tooltip": "Crafting material.",
 		"examine_text": "Unrefined wood, not good for anything other than firewood in it's current state.",
-		"icon_path": "res://assets/Sprites/Items/LogIcon.png",
+		"icon_path": "res://assets/Sprites/Items/Resources/LogIcon.png",
 		"inventory_sort_order": 20
 	},
 	"small_bag": {
@@ -32,12 +33,25 @@ const ITEMS := {
 		"inventory_name": "Damaged Sack",
 		"inventory_tooltip": "Equipment.",
 		"examine_text": "A badly damaged canvas sack, increases your inventory space when equipped.",
-		"icon_path": "res://assets/Sprites/Items/DamagedSack.png",
+		"icon_path": "res://assets/Sprites/Items/Equipment/DamagedSack.png",
 		"inventory_sort_order": 30,
 		"tags": {
 			TAG_EQUIPMENT: {
 				"slot": "bag",
 				"bag_slot_bonus": 4
+			}
+		}
+	},
+	"bent_lockpick": {
+		"display_name": "Bent Lockpick",
+		"inventory_name": "Bent Lockpick",
+		"inventory_tooltip": "Consumable tool.",
+		"examine_text": "This lockpick is on its last leg. I hope you are not relying on this one.",
+		"icon_path": "res://assets/Sprites/Items/Tools/Consumable/BentLockpick.png",
+		"inventory_sort_order": 40,
+		"tags": {
+			TAG_LOCKPICK: {
+				"break_chance": 0.75
 			}
 		}
 	}
@@ -104,6 +118,14 @@ func get_tag_value(item_name: String, tag_name: String, key: String, default_val
 
 func is_firestarter(item_name: String) -> bool:
 	return has_tag(item_name, TAG_FIRESTARTER)
+
+
+func is_lockpick(item_name: String) -> bool:
+	return has_tag(item_name, TAG_LOCKPICK)
+
+
+func get_lockpick_break_chance(item_name: String) -> float:
+	return float(get_tag_value(item_name, TAG_LOCKPICK, "break_chance", 0.0))
 
 
 func can_eat(item_name: String) -> bool:

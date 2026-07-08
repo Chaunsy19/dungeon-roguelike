@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgofaicvbt8sd"
-path="res://.godot/imported/BerryIcon.png-2cdb3480b8b903d1b2c9136ad9d9fca8.ctex"
+uid="uid://ypxbowwusccq"
+path="res://.godot/imported/LogIcon.png-acc41f28f516031018899f9e94c9478a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Sprites/Items/BerryIcon.png"
-dest_files=["res://.godot/imported/BerryIcon.png-2cdb3480b8b903d1b2c9136ad9d9fca8.ctex"]
+source_file="res://assets/Sprites/Items/Resources/LogIcon.png"
+dest_files=["res://.godot/imported/LogIcon.png-acc41f28f516031018899f9e94c9478a.ctex"]
 
 [params]
 

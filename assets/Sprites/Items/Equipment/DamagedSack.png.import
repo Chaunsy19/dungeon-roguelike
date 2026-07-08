@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ypxbowwusccq"
-path="res://.godot/imported/LogIcon.png-f447ed0c89561dec3fd401477a1ab013.ctex"
+uid="uid://bojdken3h3j12"
+path="res://.godot/imported/DamagedSack.png-c36f9e5a86b3dff09d680f29b1acf304.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Sprites/Items/LogIcon.png"
-dest_files=["res://.godot/imported/LogIcon.png-f447ed0c89561dec3fd401477a1ab013.ctex"]
+source_file="res://assets/Sprites/Items/Equipment/DamagedSack.png"
+dest_files=["res://.godot/imported/DamagedSack.png-c36f9e5a86b3dff09d680f29b1acf304.ctex"]
 
 [params]
 

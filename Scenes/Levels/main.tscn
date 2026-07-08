@@ -1260,6 +1260,11 @@ script = ExtResource("12_lv1w4")
 item_name = "small_bag"
 metadata/_custom_type_script = "uid://bnrip8wtyv0l0"
 
+[sub_resource type="Resource" id="Resource_asd15"]
+script = ExtResource("12_lv1w4")
+item_name = "bent_lockpick"
+metadata/_custom_type_script = "uid://bnrip8wtyv0l0"
+
 [node name="Main" type="Node2D" unique_id=396987464]
 
 [node name="Lighting" type="Node2D" parent="." unique_id=1836196997]
@@ -1340,4 +1345,4 @@ position = Vector2(-151, 133)
 
 [node name="Chest1" parent="." unique_id=834394032 instance=ExtResource("11_asd15")]
 position = Vector2(69, -91)
-starting_items = Array[ExtResource("12_lv1w4")]([SubResource("Resource_d8okw"), SubResource("Resource_0iqpd"), SubResource("Resource_a3d8c")])
+starting_items = Array[ExtResource("12_lv1w4")]([SubResource("Resource_d8okw"), SubResource("Resource_0iqpd"), SubResource("Resource_a3d8c"), SubResource("Resource_asd15")])
