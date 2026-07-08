@@ -1,7 +1,10 @@
 extends Button
 
+const ITEM_DATABASE_SCRIPT := preload("res://Scripts/item_database.gd")
+
 var slot_type := ""
 var player: Node = null
+var item_database = ITEM_DATABASE_SCRIPT.new()
 
 
 func setup(new_slot_type: String, player_node: Node):
@@ -19,7 +22,7 @@ func update_text(item_name: String):
 	if item_name == "":
 		text = get_slot_label(slot_type)
 	else:
-		text = get_slot_label(slot_type) + "\n" + item_name.capitalize()
+		text = get_slot_label(slot_type) + "\n" + item_database.get_display_name(item_name)
 
 
 func _can_drop_data(_position, data) -> bool:

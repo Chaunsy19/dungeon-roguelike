@@ -7,7 +7,6 @@ extends CharacterBody2D
 @export var movement_animation_max_speed_scale := 2.0
 @export var starting_hunger := 100.0
 @export var hunger_drain_rate := .25
-@export var berry_hunger_restore := 25.0
 @export var starvation_damage_rate := .50
 @export var attack_damage := 10.0
 @export var attack_range := 42.0
@@ -18,21 +17,13 @@ extends CharacterBody2D
 @export var health_regen_per_constitution_level := 0.005
 @export var health_regen_delay_after_damage := 5.0
 
-const BASE_INVENTORY_SLOT_COUNT := 10
 const ACTION_EAT := 1
 const ACTION_EXAMINE := 2
 const ACTION_EQUIP := 3
-const SKILL_XP_REQUIREMENT_SCALE := 1.15
 const DIRECTIONS := ["down", "down_right", "right", "up_right", "up", "up_left", "left", "down_left"]
-const EQUIPMENT_SLOT_TYPES := ["head", "chest", "legs", "gloves", "boots", "ring_1", "ring_2", "necklace", "bag"]
-const EQUIPMENT_SLOT_LAYOUT := [
-	"", "", "head", "", "",
-	"gloves", "", "necklace", "", "boots",
-	"", "ring_1", "chest", "ring_2", "",
-	"", "", "legs", "bag", ""
-]
-const INVENTORY_SLOT_BUTTON_SCRIPT := preload("res://Scripts/inventory_slot_button.gd")
-const EQUIPMENT_SLOT_BUTTON_SCRIPT := preload("res://Scripts/equipment_slot_button.gd")
+const ITEM_DATABASE_SCRIPT := preload("res://Scripts/item_database.gd")
+const PLAYER_INVENTORY_SCRIPT := preload("res://Scripts/player_inventory.gd")
+const PLAYER_SKILLS_SCRIPT := preload("res://Scripts/player_skills.gd")
 const HEART_FULL_TEXTURE := preload("res://assets/Sprites/HUD/heart_full.png")
 const HEART_MID_TEXTURE := preload("res://assets/Sprites/HUD/heart_mid.png")
 const HEART_LOW_TEXTURE := preload("res://assets/Sprites/HUD/heart_low.png")
@@ -49,20 +40,11 @@ var hit_flash_timer := 0.0
 var health_regen_delay_timer := 0.0
 var base_movement_animation_speed := 0.0
 
-var wood := 0
-var berries := 0
 var hunger := 100.0
 var health := 100.0
-var equipment := {}
-
-var woodcutting_xp := 0
-var woodcutting_level := 1
-var woodcutting_xp_to_next_level := 30
-
-var constitution_xp := 0
-var constitution_level := 1
-var constitution_xp_to_next_level := 30
-var constitution_damage_xp_progress := 0.0
+var item_database = ITEM_DATABASE_SCRIPT.new()
+var inventory_system = PLAYER_INVENTORY_SCRIPT.new()
+var skill_system = PLAYER_SKILLS_SCRIPT.new()
 
 @onready var interaction_area: Area2D = $InteractionArea
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -101,15 +83,14 @@ func _ready():
 	if item_action_menu != null:
 		item_action_menu.id_pressed.connect(_on_item_action_selected)
 
+	inventory_system.setup(self, inventory_list, equipment_slots, menu)
+
 	update_woodcutting_label()
 	update_wood_label()
 	update_berries_label()
 	update_hunger_label()
 	update_health_label()
 	update_constitution_label()
-	setup_equipment_slots()
-	update_inventory_list()
-	update_equipment_slots()
 
 func _physics_process(delta):
 	handle_hit_flash(delta)
@@ -411,35 +392,39 @@ func try_interact():
 			return
 
 func add_wood(amount):
-	wood += amount
-	update_wood_label()
-	update_inventory_list()
+	add_item("wood", amount)
 
 func add_berries(amount):
-	berries += amount
-	update_berries_label()
-	update_inventory_list()
+	add_item("berries", amount)
+
+func add_item(item_name: String, amount: int):
+	inventory_system.add_item(item_name, amount)
+	update_item_count_labels()
 
 func eat_berry():
-	if berries <= 0:
+	eat_item("berries")
+
+func eat_item(item_name: String):
+	if not item_database.can_eat(item_name):
+		return
+
+	if inventory_system.get_item_count(item_name) <= 0:
 		return
 
 	if hunger >= 100:
 		return
 
-	berries -= 1
-	hunger += berry_hunger_restore
+	if not inventory_system.remove_item(item_name, 1):
+		return
+
+	hunger += item_database.get_hunger_restore(item_name)
 	hunger = clamp(hunger, 0, 100)
 
-	update_berries_label()
+	update_item_count_labels()
 	update_hunger_label()
-	update_inventory_list()
 
 func examine_item(item_name: String):
-	if item_name == "berries":
-		show_message("Berries: Small wild berries. They restore hunger when eaten.")
-	elif item_name == "wood":
-		show_message("Wood: A basic crafting material. It cannot be used yet.")
+	show_message(item_database.get_examine_text(item_name))
 
 func show_message(message: String):
 	if message_label == null:
@@ -449,10 +434,10 @@ func show_message(message: String):
 	message_label.text = message
 
 func get_max_health():
-	return 100 + ((constitution_level - 1) * 10)
+	return 100 + ((skill_system.get_level("constitution") - 1) * 10)
 
 func get_health_regen_rate():
-	return constitution_level * health_regen_per_constitution_level
+	return skill_system.get_level("constitution") * health_regen_per_constitution_level
 
 func take_damage(amount):
 	if health <= 0:
@@ -469,50 +454,48 @@ func take_damage(amount):
 		show_message("You have collapsed.")
 
 func gain_constitution_xp_from_damage(amount):
-	constitution_damage_xp_progress += amount * 0.33
+	var levels_gained := skill_system.gain_constitution_xp_from_damage(amount)
 
-	while constitution_damage_xp_progress >= 1.0:
-		constitution_damage_xp_progress -= 1.0
-		gain_constitution_xp(1)
-
-func gain_woodcutting_xp(amount):
-	woodcutting_xp += amount
-
-	while woodcutting_xp >= woodcutting_xp_to_next_level:
-		woodcutting_xp -= woodcutting_xp_to_next_level
-		woodcutting_level += 1
-		woodcutting_xp_to_next_level = get_next_skill_xp_requirement(woodcutting_xp_to_next_level)
-		print("Woodcutting level up! Level: ", woodcutting_level)
-
-	update_woodcutting_label()
-
-func gain_constitution_xp(amount):
-	constitution_xp += amount
-
-	while constitution_xp >= constitution_xp_to_next_level:
-		constitution_xp -= constitution_xp_to_next_level
-		constitution_level += 1
-		constitution_xp_to_next_level = get_next_skill_xp_requirement(constitution_xp_to_next_level)
+	if levels_gained > 0:
 		health = get_max_health()
-		show_message("Constitution level up! Level: %s" % constitution_level)
+		show_message("Constitution level up! Level: %s" % skill_system.get_level("constitution"))
 
 	update_health_label()
 	update_constitution_label()
 
-func get_next_skill_xp_requirement(current_requirement: int) -> int:
-	return max(current_requirement + 1, int(ceil(current_requirement * SKILL_XP_REQUIREMENT_SCALE)))
+func gain_woodcutting_xp(amount):
+	var levels_gained := skill_system.gain_xp("woodcutting", amount)
+
+	if levels_gained > 0:
+		print("Woodcutting level up! Level: ", skill_system.get_level("woodcutting"))
+
+	update_woodcutting_label()
+
+func gain_constitution_xp(amount):
+	var levels_gained := skill_system.gain_xp("constitution", amount)
+
+	if levels_gained > 0:
+		health = get_max_health()
+		show_message("Constitution level up! Level: %s" % skill_system.get_level("constitution"))
+
+	update_health_label()
+	update_constitution_label()
 
 func update_wood_label():
 	if wood_label == null:
 		return
 
-	wood_label.text = "Wood: %s" % wood
+	wood_label.text = "Wood: %s" % inventory_system.get_wood()
 
 func update_berries_label():
 	if berries_label == null:
 		return
 
-	berries_label.text = "Berries: %s" % berries
+	berries_label.text = "Berries: %s" % inventory_system.get_berries()
+
+func update_item_count_labels():
+	update_wood_label()
+	update_berries_label()
 
 func update_hunger_label():
 	if hunger_icon == null:
@@ -545,93 +528,13 @@ func update_health_label():
 	health_icon.tooltip_text = "Health: %d / %d" % [int(ceil(health)), get_max_health()]
 
 func update_inventory_list():
-	if inventory_list == null:
-		return
-
-	for child in inventory_list.get_children():
-		inventory_list.remove_child(child)
-		child.queue_free()
-
-	var items := []
-
-	if berries > 0:
-		items.append({
-			"text": "Berries\nx%s" % berries,
-			"tooltip": "Small wild berries. Right-click for actions.",
-			"name": "berries"
-		})
-
-	if wood > 0:
-		items.append({
-			"text": "Wood\nx%s" % wood,
-			"tooltip": "A basic crafting material. Right-click for actions.",
-			"name": "wood"
-		})
-
-	for slot_index in range(get_inventory_slot_count()):
-		if slot_index < items.size():
-			var item = items[slot_index]
-			add_inventory_slot(item["text"], item["tooltip"], item["name"])
-		else:
-			add_inventory_slot("", "Empty inventory slot", "")
-
-	request_menu_fit_to_content()
-
-func add_inventory_slot(button_text: String, tooltip: String, item_name: String):
-	var button := Button.new()
-	button.set_script(INVENTORY_SLOT_BUTTON_SCRIPT)
-	button.call("setup", item_name, button_text, tooltip, self)
-	button.gui_input.connect(_on_inventory_item_gui_input.bind(item_name))
-	inventory_list.add_child(button)
+	inventory_system.update_inventory_list()
 
 func setup_equipment_slots():
-	if equipment_slots == null:
-		return
-
-	for slot_type in EQUIPMENT_SLOT_TYPES:
-		equipment[slot_type] = ""
-
-	for child in equipment_slots.get_children():
-		equipment_slots.remove_child(child)
-		child.queue_free()
-
-	for slot_type in EQUIPMENT_SLOT_LAYOUT:
-		if slot_type == "":
-			add_equipment_spacer()
-		else:
-			add_equipment_slot(slot_type)
-
-	request_menu_fit_to_content()
-
-func add_equipment_slot(slot_type: String):
-	var button := Button.new()
-	button.set_script(EQUIPMENT_SLOT_BUTTON_SCRIPT)
-	button.call("setup", slot_type, self)
-	equipment_slots.add_child(button)
-
-func add_equipment_spacer():
-	var spacer := Control.new()
-	spacer.custom_minimum_size = Vector2(48, 48)
-	equipment_slots.add_child(spacer)
+	inventory_system.setup_equipment_slots()
 
 func update_equipment_slots():
-	if equipment_slots == null:
-		return
-
-	for child in equipment_slots.get_children():
-		var slot_type_value = child.get("slot_type")
-		if typeof(slot_type_value) != TYPE_STRING:
-			continue
-
-		var slot_type: String = slot_type_value
-		var equipped_item: String = ""
-		if equipment.has(slot_type):
-			equipped_item = equipment[slot_type]
-
-		if child.has_method("update_text"):
-			child.update_text(equipped_item)
-
-	request_menu_fit_to_content()
+	inventory_system.update_equipment_slots()
 
 func request_menu_fit_to_content():
 	if menu == null:
@@ -641,73 +544,31 @@ func request_menu_fit_to_content():
 		menu.call("request_fit_to_content")
 
 func get_inventory_slot_count() -> int:
-	var bag_item := ""
-
-	if equipment.has("bag"):
-		bag_item = equipment["bag"]
-
-	return BASE_INVENTORY_SLOT_COUNT + get_bag_slot_bonus(bag_item)
+	return inventory_system.get_inventory_slot_count()
 
 func get_bag_slot_bonus(item_name: String) -> int:
-	if item_name == "small_bag":
-		return 18
-
-	return 0
+	return inventory_system.get_bag_slot_bonus(item_name)
 
 func can_equip_item_to_slot(item_name: String, slot_type: String) -> bool:
-	if item_name == "":
-		return false
-
-	var item_slot_type := get_item_equipment_slot(item_name)
-
-	if item_slot_type == "":
-		return false
-
-	if item_slot_type == "ring":
-		return slot_type == "ring_1" or slot_type == "ring_2"
-
-	return item_slot_type == slot_type
+	return inventory_system.can_equip_item_to_slot(item_name, slot_type)
 
 func equip_item_to_slot(item_name: String, slot_type: String):
-	if not can_equip_item_to_slot(item_name, slot_type):
-		show_message("%s cannot be equipped there." % item_name.capitalize())
+	if not inventory_system.equip_item_to_slot(item_name, slot_type):
 		return
 
-	equipment[slot_type] = item_name
-	update_equipment_slots()
-	update_inventory_list()
-	show_message("Equipped %s." % item_name.capitalize())
+	show_message("Equipped %s." % item_database.get_display_name(item_name))
 
 func equip_item_to_first_available_slot(item_name: String):
-	var possible_slots := get_possible_equipment_slots(item_name)
-
-	if possible_slots.is_empty():
-		show_message("%s cannot be equipped." % item_name.capitalize())
+	if not inventory_system.equip_item_to_first_available_slot(item_name):
 		return
 
-	for slot_type in possible_slots:
-		if equipment.get(slot_type, "") == "":
-			equip_item_to_slot(item_name, slot_type)
-			return
-
-	equip_item_to_slot(item_name, possible_slots[0])
+	show_message("Equipped %s." % item_database.get_display_name(item_name))
 
 func get_possible_equipment_slots(item_name: String) -> Array:
-	var item_slot_type := get_item_equipment_slot(item_name)
-
-	if item_slot_type == "ring":
-		return ["ring_1", "ring_2"]
-
-	if item_slot_type != "":
-		return [item_slot_type]
-
-	return []
+	return inventory_system.get_possible_equipment_slots(item_name)
 
 func get_item_equipment_slot(item_name: String) -> String:
-	if item_name == "small_bag":
-		return "bag"
-
-	return ""
+	return inventory_system.get_item_equipment_slot(item_name)
 
 func _on_inventory_item_gui_input(event: InputEvent, item_name: String):
 	if item_name == "":
@@ -724,7 +585,7 @@ func show_item_action_menu(item_name: String):
 	selected_inventory_item = item_name
 	item_action_menu.clear()
 
-	if item_name == "berries":
+	if item_database.can_eat(item_name):
 		item_action_menu.add_item("Eat", ACTION_EAT)
 
 	if get_item_equipment_slot(item_name) != "":
@@ -739,8 +600,7 @@ func _on_item_action_selected(action_id: int):
 		return
 
 	if action_id == ACTION_EAT:
-		if selected_inventory_item == "berries":
-			eat_berry()
+		eat_item(selected_inventory_item)
 	elif action_id == ACTION_EQUIP:
 		equip_item_to_first_available_slot(selected_inventory_item)
 	elif action_id == ACTION_EXAMINE:
@@ -749,26 +609,18 @@ func _on_item_action_selected(action_id: int):
 	selected_inventory_item = ""
 
 func update_woodcutting_label():
-	var text := "Level: %s XP %s / %s" % [
-		woodcutting_level,
-		woodcutting_xp,
-		woodcutting_xp_to_next_level
-	]
+	var text: String = skill_system.get_label_text("woodcutting")
 
 	if woodcutting_label != null:
 		woodcutting_label.text = text
 
 	if woodcutting_skill_label != null:
-		woodcutting_skill_label.text = "Wood\n%s" % woodcutting_level
+		woodcutting_skill_label.text = "Wood\n%s" % skill_system.get_level("woodcutting")
 		woodcutting_skill_label.tooltip_text = text
 
 func update_constitution_label():
-	var text := "Level: %s XP %s / %s" % [
-		constitution_level,
-		constitution_xp,
-		constitution_xp_to_next_level
-	]
+	var text: String = skill_system.get_label_text("constitution")
 
 	if constitution_skill_label != null:
-		constitution_skill_label.text = "Con\n%s" % constitution_level
+		constitution_skill_label.text = "Con\n%s" % skill_system.get_level("constitution")
 		constitution_skill_label.tooltip_text = text

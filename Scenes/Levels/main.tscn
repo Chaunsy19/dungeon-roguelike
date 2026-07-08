@@ -1290,7 +1290,7 @@ tile_set = SubResource("TileSet_riqys")
 
 [node name="DungeonInteractables" type="TileMapLayer" parent="TileMaps" unique_id=1021669868]
 
-[node name="UI" parent="." instance=ExtResource("18_game_ui")]
+[node name="UI" parent="." unique_id=1110502108 instance=ExtResource("18_game_ui")]
 
 [node name="Player" parent="." unique_id=115543656 instance=ExtResource("7_irn1k")]
 position = Vector2(-148, -80)
