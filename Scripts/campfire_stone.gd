@@ -6,6 +6,7 @@ extends StaticBody2D
 @export var startup_flicker_strength := 0.45
 @export var snuff_flicker_strength := 0.35
 @export var transition_flicker_speed := 22.0
+@export var snuff_sound_start_offset := 0.5
 
 var is_lit := false
 var transition_timer := 0.0
@@ -15,6 +16,8 @@ var campfire_state := "unlit"
 @onready var fire: AnimatedSprite2D = $Fire
 @onready var smoke: AnimatedSprite2D = $Smoke
 @onready var light_source: Node2D = $LightSource
+@onready var fire_start_sound: AudioStreamPlayer2D = $FireStartSound
+@onready var fire_snuffed_sound: AudioStreamPlayer2D = $FireSnuffedSound
 
 
 func _ready():
@@ -80,6 +83,7 @@ func start_lighting():
 	transition_timer = 0.0
 	show_burning_visuals()
 	set_light_energy_multiplier(0.0)
+	play_fire_start_sound()
 
 
 func start_snuffing():
@@ -88,6 +92,7 @@ func start_snuffing():
 
 	campfire_state = "snuffing"
 	transition_timer = 0.0
+	play_fire_snuffed_sound()
 
 
 func process_lighting(delta: float):
@@ -162,3 +167,19 @@ func set_light_energy_multiplier(value: float):
 
 	if light_source.has_method("set_energy_multiplier"):
 		light_source.set_energy_multiplier(value)
+
+
+func play_fire_start_sound():
+	if fire_snuffed_sound != null:
+		fire_snuffed_sound.stop()
+
+	if fire_start_sound != null:
+		fire_start_sound.play()
+
+
+func play_fire_snuffed_sound():
+	if fire_start_sound != null:
+		fire_start_sound.stop()
+
+	if fire_snuffed_sound != null:
+		fire_snuffed_sound.play(snuff_sound_start_offset)

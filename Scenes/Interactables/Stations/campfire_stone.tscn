@@ -5,6 +5,8 @@
 [ext_resource type="Texture2D" uid="uid://3gpa1evw2ve4" path="res://assets/Sprites/SpriteSheets/Fires/Smoke-Sheet.png" id="3_5ij71"]
 [ext_resource type="PackedScene" uid="uid://du1w7ue4b0875" path="res://Scenes/Lighting/light_source.tscn" id="3_8doo6"]
 [ext_resource type="Script" uid="uid://n3l637vabik0" path="res://Scripts/campfire_stone.gd" id="4_campfire_script"]
+[ext_resource type="AudioStream" uid="uid://bf5b7m3mr3xap" path="res://assets/audio/fireStart.wav" id="5_fire_start"]
+[ext_resource type="AudioStream" uid="uid://dr55c7g6vxla4" path="res://assets/audio/fireSnuffed.wav" id="6_fire_snuffed"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_m2uew"]
 atlas = ExtResource("1_htfwf")
@@ -153,6 +155,12 @@ frame_progress = 0.7070454
 visible = false
 position = Vector2(0, -3)
 light_color = Color(0.66856563, 0.17405492, 0, 1)
+
+[node name="FireStartSound" type="AudioStreamPlayer2D" parent="." unique_id=1749613185]
+stream = ExtResource("5_fire_start")
+
+[node name="FireSnuffedSound" type="AudioStreamPlayer2D" parent="." unique_id=385331714]
+stream = ExtResource("6_fire_snuffed")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=577096193]
 shape = SubResource("CircleShape2D_interaction")
