@@ -39,7 +39,7 @@ sprite_frames = SubResource("SpriteFrames_player_preview")
 animation = &"idle_down"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1326241679]
-position = Vector2(0, 7)
+position = Vector2(0, -5)
 shape = SubResource("RectangleShape2D_bhunq")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1396922154]
