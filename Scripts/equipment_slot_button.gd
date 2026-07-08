@@ -1,6 +1,7 @@
 extends Button
 
 const ITEM_DATABASE_SCRIPT := preload("res://Scripts/item_database.gd")
+const SLOT_SIZE := Vector2(48, 48)
 
 var slot_type := ""
 var player: Node = null
@@ -10,19 +11,53 @@ var item_database = ITEM_DATABASE_SCRIPT.new()
 func setup(new_slot_type: String, player_node: Node):
 	slot_type = new_slot_type
 	player = player_node
-	custom_minimum_size = Vector2(48, 48)
+	custom_minimum_size = SLOT_SIZE
+	clip_contents = true
 	size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	focus_mode = Control.FOCUS_NONE
 	alignment = HORIZONTAL_ALIGNMENT_CENTER
+	expand_icon = true
 	update_text("")
 
 
 func update_text(item_name: String):
+	clear_slot_visual()
+	icon = null
+
 	if item_name == "":
 		text = get_slot_label(slot_type)
+		tooltip_text = get_slot_label(slot_type)
+		return
+
+	var display_name := item_database.get_display_name(item_name)
+	var texture := get_item_texture(item_name)
+
+	if texture == null:
+		text = get_slot_label(slot_type) + "\n" + display_name
 	else:
-		text = get_slot_label(slot_type) + "\n" + item_database.get_display_name(item_name)
+		text = ""
+		icon = texture
+
+	tooltip_text = "%s: %s" % [get_slot_label(slot_type), display_name]
+
+
+func clear_slot_visual():
+	for child in get_children():
+		remove_child(child)
+		child.queue_free()
+
+
+func get_item_texture(item_name: String) -> Texture2D:
+	var icon_path := item_database.get_icon_path(item_name)
+	if icon_path == "":
+		return null
+
+	if not ResourceLoader.exists(icon_path):
+		return null
+
+	var texture := load(icon_path) as Texture2D
+	return texture
 
 
 func _can_drop_data(_position, data) -> bool:

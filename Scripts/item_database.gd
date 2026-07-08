@@ -7,6 +7,7 @@ const ITEMS := {
 		"inventory_name": "Berries",
 		"inventory_tooltip": "Edible",
 		"examine_text": "Small wild berries. They restore hunger when eaten.",
+		"icon_path": "res://assets/Sprites/Items/BerryIcon.png",
 		"inventory_sort_order": 10,
 		"hunger_restore": 25,
 		"can_eat": true
@@ -16,6 +17,7 @@ const ITEMS := {
 		"inventory_name": "Wood",
 		"inventory_tooltip": "Crafting material.",
 		"examine_text": "Unrefined wood, not good for anything other than firewood in it's current state.",
+		"icon_path": "res://assets/Sprites/Items/LogIcon.png",
 		"inventory_sort_order": 20
 	},
 	"small_bag": {
@@ -23,6 +25,7 @@ const ITEMS := {
 		"inventory_name": "Damaged Sack",
 		"inventory_tooltip": "Equipment.",
 		"examine_text": "A badly damaged canvas sack, increases your inventory space when equipped.",
+		"icon_path": "",
 		"inventory_sort_order": 30,
 		"equipment_slot": "bag",
 		"bag_slot_bonus": 4
@@ -51,6 +54,10 @@ func get_inventory_name(item_name: String) -> String:
 
 func get_inventory_tooltip(item_name: String) -> String:
 	return get_item_value(item_name, "inventory_tooltip", "")
+
+
+func get_icon_path(item_name: String) -> String:
+	return get_item_value(item_name, "icon_path", "")
 
 
 func get_inventory_sort_order(item_name: String) -> int:

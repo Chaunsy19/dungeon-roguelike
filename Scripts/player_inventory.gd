@@ -107,24 +107,26 @@ func update_inventory_list():
 	for slot_index in range(get_inventory_slot_count()):
 		if slot_index < items.size():
 			var item = items[slot_index]
-			add_inventory_slot(item["text"], item["tooltip"], item["name"])
+			add_inventory_slot(item["name"], item["display_name"], item["icon_path"], item["amount"], item["tooltip"])
 		else:
-			add_inventory_slot("", "Empty inventory slot", "")
+			add_inventory_slot("", "", "", 0, "Empty inventory slot")
 
 	request_menu_fit_to_content()
 
 
-func add_inventory_slot(button_text: String, tooltip: String, item_name: String):
+func add_inventory_slot(item_name: String, display_name: String, icon_path: String, amount: int, tooltip: String):
 	var button := Button.new()
 	button.set_script(INVENTORY_SLOT_BUTTON_SCRIPT)
-	button.call("setup", item_name, button_text, tooltip, player)
+	button.call("setup", item_name, display_name, icon_path, amount, tooltip, player)
 	button.gui_input.connect(Callable(player, "_on_inventory_item_gui_input").bind(item_name))
 	inventory_list.add_child(button)
 
 
 func get_inventory_item_entry(item_name: String, amount: int) -> Dictionary:
 	return {
-		"text": "%s\nx%s" % [item_database.get_inventory_name(item_name), amount],
+		"display_name": item_database.get_inventory_name(item_name),
+		"icon_path": item_database.get_icon_path(item_name),
+		"amount": amount,
 		"tooltip": item_database.get_inventory_tooltip(item_name),
 		"name": item_name
 	}
