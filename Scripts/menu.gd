@@ -1,8 +1,9 @@
-extends PanelContainer
+extends Control
 
 var active_page: Control = null
 var fit_request_pending := false
 
+@onready var menu_layout: Control = $MenuLayout
 @onready var content_panel: Control = $MenuLayout/ContentPanel
 @onready var character_page: Control = $MenuLayout/ContentPanel/Content/CharacterPage
 @onready var skills_page: Control = $MenuLayout/ContentPanel/Content/SkillsPage
@@ -10,6 +11,7 @@ var fit_request_pending := false
 @onready var settings_page: Control = $MenuLayout/ContentPanel/Content/SettingsPage
 @onready var equipment_panel: Control = $MenuLayout/ContentPanel/Content/EquipmentPanel
 
+@onready var menu_buttons: HBoxContainer = $MenuLayout/MenuButtons
 @onready var character_button: Button = $MenuLayout/MenuButtons/Character
 @onready var skills_button: Button = $MenuLayout/MenuButtons/Skills
 @onready var inventory_button: Button = $MenuLayout/MenuButtons/Inventory
@@ -37,6 +39,12 @@ func _ready():
 
 	hide_all_pages()
 	request_fit_to_content()
+
+func _unhandled_input(event: InputEvent):
+	if event is InputEventKey:
+		if event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+			hide_all_pages()
+			get_viewport().set_input_as_handled()
 
 func toggle_character_page():
 	toggle_page(character_page)
@@ -104,11 +112,29 @@ func fit_to_content():
 
 	custom_minimum_size = Vector2.ZERO
 
-	var menu_size := get_combined_minimum_size()
-	if menu_size.x <= 0 or menu_size.y <= 0:
+	var button_bar_size := menu_buttons.get_combined_minimum_size()
+	if button_bar_size.x <= 0 or button_bar_size.y <= 0:
 		return
 
+	var content_size := Vector2.ZERO
+	if content_panel.visible:
+		content_size = content_panel.get_combined_minimum_size()
+
+	var menu_size := Vector2(
+		max(button_bar_size.x, content_size.x),
+		button_bar_size.y + content_size.y
+	)
+
 	size = menu_size
+	menu_layout.position = Vector2.ZERO
+	menu_layout.size = menu_size
+	menu_buttons.position = Vector2(menu_size.x - button_bar_size.x, menu_size.y - button_bar_size.y)
+	menu_buttons.size = button_bar_size
+
+	if content_panel.visible:
+		content_panel.size = content_size
+		content_panel.position = Vector2(menu_size.x - content_size.x, 0.0)
+
 	offset_left = -menu_size.x
 	offset_top = -menu_size.y
 	offset_right = 0.0

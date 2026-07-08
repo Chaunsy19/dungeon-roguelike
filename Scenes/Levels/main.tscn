@@ -10,6 +10,11 @@
 [ext_resource type="PackedScene" uid="uid://cjlpixpfoc587" path="res://Scenes/Interactables/Triggers/music_trigger.tscn" id="8_5txqb"]
 [ext_resource type="PackedScene" uid="uid://bs8tix7gjass" path="res://Scenes/NPCs/troll.tscn" id="9_42g4d"]
 [ext_resource type="PackedScene" uid="uid://cukqw0cl3ppcx" path="res://Scenes/Interactables/Stations/campfire_stone.tscn" id="10_d8okw"]
+[ext_resource type="Texture2D" uid="uid://c5iwgeui2cdau" path="res://assets/Sprites/UI/CharacterIcon.png" id="11_character"]
+[ext_resource type="Texture2D" uid="uid://dor1poiewx4hy" path="res://assets/Sprites/UI/EquipmentIcon.png" id="12_equipment"]
+[ext_resource type="Texture2D" uid="uid://vja6iq7uk12d" path="res://assets/Sprites/UI/SkillsIcon.png" id="13_skills"]
+[ext_resource type="Texture2D" uid="uid://beytq3km6a5fa" path="res://assets/Sprites/UI/InventoryIcon.png" id="14_inventory"]
+[ext_resource type="Texture2D" uid="uid://cehgyqt1h1djm" path="res://assets/Sprites/UI/SettingsIcon.png" id="15_settings"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ynf5e"]
 polygon = PackedVector2Array(-8, 2.666667, -8, -8, 8, -8, 8, 2.666667)
@@ -1302,7 +1307,8 @@ texture = ExtResource("5_lv1w4")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Menu" type="PanelContainer" parent="UI" unique_id=1565357127]
+[node name="Menu" type="Control" parent="UI" unique_id=1565357127]
+layout_mode = 3
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -1312,11 +1318,11 @@ grow_horizontal = 0
 grow_vertical = 0
 script = ExtResource("6_snpdt")
 
-[node name="MenuLayout" type="VBoxContainer" parent="UI/Menu" unique_id=32704201]
-layout_mode = 2
+[node name="MenuLayout" type="Control" parent="UI/Menu" unique_id=32704201]
+anchors_preset = 0
 
 [node name="ContentPanel" type="PanelContainer" parent="UI/Menu/MenuLayout" unique_id=483631874]
-layout_mode = 2
+layout_mode = 0
 
 [node name="Content" type="HBoxContainer" parent="UI/Menu/MenuLayout/ContentPanel" unique_id=1117246105]
 layout_mode = 2
@@ -1345,22 +1351,22 @@ columns = 5
 [node name="SkillsPage" type="GridContainer" parent="UI/Menu/MenuLayout/ContentPanel/Content" unique_id=1980526927]
 visible = false
 layout_mode = 2
-columns = 2
+columns = 5
 
 [node name="WoodcuttingSkillLabel" type="Button" parent="UI/Menu/MenuLayout/ContentPanel/Content/SkillsPage" unique_id=2132865523]
-custom_minimum_size = Vector2(140, 48)
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 tooltip_text = "Woodcutting: 1 | XP 0 / 30"
 focus_mode = 0
-text = "Woodcutting
+text = "Wood
 1"
 
 [node name="ConstitutionSkillLabel" type="Button" parent="UI/Menu/MenuLayout/ContentPanel/Content/SkillsPage" unique_id=1052439]
-custom_minimum_size = Vector2(140, 48)
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 tooltip_text = "Level: 1 XP 0 / 30"
 focus_mode = 0
-text = "Constitution
+text = "Con
 1"
 
 [node name="InventoryPage" type="VBoxContainer" parent="UI/Menu/MenuLayout/ContentPanel/Content" unique_id=1888240123]
@@ -1386,27 +1392,47 @@ focus_mode = 0
 text = "Reload"
 
 [node name="MenuButtons" type="HBoxContainer" parent="UI/Menu/MenuLayout" unique_id=1811292273]
-layout_mode = 2
+layout_mode = 0
 
 [node name="Character" type="Button" parent="UI/Menu/MenuLayout/MenuButtons" unique_id=254742350]
+custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
-text = "Character"
-
-[node name="Skills" type="Button" parent="UI/Menu/MenuLayout/MenuButtons" unique_id=1080650847]
-layout_mode = 2
-text = "Skills"
-
-[node name="Inventory" type="Button" parent="UI/Menu/MenuLayout/MenuButtons" unique_id=292118671]
-layout_mode = 2
-text = "Inventory"
+tooltip_text = "Character"
+icon = ExtResource("11_character")
+flat = true
+expand_icon = true
 
 [node name="Equipment" type="Button" parent="UI/Menu/MenuLayout/MenuButtons" unique_id=1013621118]
+custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
-text = "Equipment"
+tooltip_text = "Equipment"
+icon = ExtResource("12_equipment")
+flat = true
+expand_icon = true
+
+[node name="Skills" type="Button" parent="UI/Menu/MenuLayout/MenuButtons" unique_id=1080650847]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+tooltip_text = "Skills"
+icon = ExtResource("13_skills")
+flat = true
+expand_icon = true
+
+[node name="Inventory" type="Button" parent="UI/Menu/MenuLayout/MenuButtons" unique_id=292118671]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+tooltip_text = "Inventory"
+icon = ExtResource("14_inventory")
+flat = true
+expand_icon = true
 
 [node name="Settings" type="Button" parent="UI/Menu/MenuLayout/MenuButtons" unique_id=912527689]
+custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
-text = "Settings"
+tooltip_text = "Settings"
+icon = ExtResource("15_settings")
+flat = true
+expand_icon = true
 
 [node name="MessageLabel" type="Label" parent="UI" unique_id=1825688176]
 offset_left = 16.0

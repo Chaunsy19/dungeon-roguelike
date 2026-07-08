@@ -759,7 +759,7 @@ func update_woodcutting_label():
 		woodcutting_label.text = text
 
 	if woodcutting_skill_label != null:
-		woodcutting_skill_label.text = "Woodcutting\n%s" % woodcutting_level
+		woodcutting_skill_label.text = "Wood\n%s" % woodcutting_level
 		woodcutting_skill_label.tooltip_text = text
 
 func update_constitution_label():
@@ -770,5 +770,5 @@ func update_constitution_label():
 	]
 
 	if constitution_skill_label != null:
-		constitution_skill_label.text = "Constitution\n%s" % constitution_level
+		constitution_skill_label.text = "Con\n%s" % constitution_level
 		constitution_skill_label.tooltip_text = text
