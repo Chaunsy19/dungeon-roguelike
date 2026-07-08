@@ -17,9 +17,6 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bhunq"]
 size = Vector2(14, 18)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_bhunq"]
-radius = 25.019993
-
 [node name="Player" type="CharacterBody2D" unique_id=115543656]
 collision_mask = 14
 script = ExtResource("1_cvnsp")
@@ -30,6 +27,7 @@ movement_animation_max_speed_scale = 0.5
 attack_range = 45.0
 attack_arc_degrees = 90.0
 health_regen_per_constitution_level = 0.5
+world_action_click_radius = 5.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=854958402]
 light_mask = 5
@@ -44,11 +42,3 @@ shape = SubResource("RectangleShape2D_bhunq")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1396922154]
 zoom = Vector2(2, 2)
-
-[node name="InteractionArea" type="Area2D" parent="." unique_id=1964554832]
-collision_layer = 0
-collision_mask = 3
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea" unique_id=396597521]
-position = Vector2(0, -8)
-shape = SubResource("CircleShape2D_bhunq")

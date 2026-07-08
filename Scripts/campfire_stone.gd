@@ -1,5 +1,8 @@
 extends StaticBody2D
 
+const WORLD_ACTION_LIGHT := 102
+const WORLD_ACTION_SNUFF := 103
+
 @export var starts_lit := false
 @export var light_fade_in_time := 1.5
 @export var light_fade_out_time := 1.2
@@ -43,6 +46,45 @@ func interact(_player = null):
 	if campfire_state == "unlit" or campfire_state == "snuffing":
 		start_lighting()
 	else:
+		start_snuffing()
+
+
+func _input_event(_viewport, event: InputEvent, _shape_idx: int):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			show_action_menu(event.position)
+
+
+func show_action_menu(screen_position: Vector2):
+	var player := get_tree().current_scene.get_node_or_null("Player")
+	if player == null:
+		return
+
+	if player.has_method("show_world_action_menu"):
+		player.show_world_action_menu(self, screen_position)
+
+
+func get_world_actions(_player = null) -> Array:
+	if campfire_state == "unlit" or campfire_state == "snuffing":
+		return [
+			{
+				"label": "Light",
+				"id": WORLD_ACTION_LIGHT
+			}
+		]
+
+	return [
+		{
+			"label": "Snuff",
+			"id": WORLD_ACTION_SNUFF
+		}
+	]
+
+
+func perform_world_action(action_id: int, _player = null):
+	if action_id == WORLD_ACTION_LIGHT:
+		start_lighting()
+	elif action_id == WORLD_ACTION_SNUFF:
 		start_snuffing()
 
 

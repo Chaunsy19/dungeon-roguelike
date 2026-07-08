@@ -167,6 +167,8 @@ offset_bottom = 1023.0
 
 [node name="ItemActionMenu" type="PopupMenu" parent="." unique_id=1249777893]
 
+[node name="WorldActionMenu" type="PopupMenu" parent="."]
+
 [node name="ChestLootPanel" type="PanelContainer" parent="."]
 visible = false
 offset_left = 760.0

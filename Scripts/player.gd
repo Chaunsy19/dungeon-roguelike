@@ -16,10 +16,15 @@ extends CharacterBody2D
 @export var hit_flash_time := 0.12
 @export var health_regen_per_constitution_level := 0.005
 @export var health_regen_delay_after_damage := 5.0
+@export var world_action_click_radius := 16.0
+@export var world_action_reach := 48.0
 
 const ACTION_EAT := 1
 const ACTION_EXAMINE := 2
 const ACTION_EQUIP := 3
+const WORLD_ACTION_OPEN := 101
+const WORLD_ACTION_LIGHT := 102
+const WORLD_ACTION_SNUFF := 103
 const DIRECTIONS := ["down", "down_right", "right", "up_right", "up", "up_left", "left", "down_left"]
 const ITEM_DATABASE_SCRIPT := preload("res://Scripts/item_database.gd")
 const PLAYER_INVENTORY_SCRIPT := preload("res://Scripts/player_inventory.gd")
@@ -31,8 +36,8 @@ const HUNGER_FULL_TEXTURE := preload("res://assets/Sprites/HUD/hunger_full.png")
 const HUNGER_MID_TEXTURE := preload("res://assets/Sprites/HUD/hunger_mid.png")
 const HUNGER_LOW_TEXTURE := preload("res://assets/Sprites/HUD/hunger_low.png")
 
-var interaction_pressed := false
 var selected_inventory_item := ""
+var selected_world_target: Node = null
 var facing_direction := "down"
 var attack_cooldown_timer := 0.0
 var attack_animation_timer := 0.0
@@ -46,7 +51,6 @@ var item_database = ITEM_DATABASE_SCRIPT.new()
 var inventory_system = PLAYER_INVENTORY_SCRIPT.new()
 var skill_system = PLAYER_SKILLS_SCRIPT.new()
 
-@onready var interaction_area: Area2D = $InteractionArea
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 var woodcutting_label: Label
@@ -61,6 +65,7 @@ var equipment_slots: GridContainer
 var menu: Control
 var chest_loot_panel: Control
 var item_action_menu: PopupMenu
+var world_action_menu: PopupMenu
 var message_label: Label
 
 func _ready():
@@ -80,10 +85,14 @@ func _ready():
 	inventory_list = get_tree().current_scene.get_node_or_null("UI/Menu/MenuLayout/ContentPanel/Content/InventoryPage/InventoryList")
 	equipment_slots = get_tree().current_scene.get_node_or_null("UI/Menu/MenuLayout/ContentPanel/Content/EquipmentPanel/EquipmentSlots")
 	item_action_menu = get_tree().current_scene.get_node_or_null("UI/ItemActionMenu")
+	world_action_menu = get_tree().current_scene.get_node_or_null("UI/WorldActionMenu")
 	message_label = get_tree().current_scene.get_node_or_null("UI/MessageLabel")
 
 	if item_action_menu != null:
 		item_action_menu.id_pressed.connect(_on_item_action_selected)
+
+	if world_action_menu != null:
+		world_action_menu.id_pressed.connect(_on_world_action_selected)
 
 	inventory_system.setup(self, inventory_list, equipment_slots, menu)
 
@@ -98,13 +107,17 @@ func _physics_process(delta):
 	handle_hit_flash(delta)
 	handle_attack_timers(delta)
 	handle_movement(delta)
-	handle_interaction()
 	handle_hunger(delta)
 	handle_starvation_damage(delta)
 	handle_health_regen(delta)
 
 func _unhandled_input(event: InputEvent):
 	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			if try_show_world_action_menu_at_mouse():
+				get_viewport().set_input_as_handled()
+				return
+
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			try_attack_toward_mouse()
 
@@ -337,14 +350,6 @@ func play_interact_animation():
 func play_jump_animation():
 	play_directional_animation("jump", facing_direction)
 
-func handle_interaction():
-	if Input.is_physical_key_pressed(KEY_E) and not interaction_pressed:
-		interaction_pressed = true
-		try_interact()
-
-	if not Input.is_physical_key_pressed(KEY_E):
-		interaction_pressed = false
-
 func handle_hunger(delta):
 	hunger -= hunger_drain_rate * delta
 	hunger = clamp(hunger, 0, 100)
@@ -372,26 +377,6 @@ func handle_health_regen(delta):
 	health += get_health_regen_rate() * delta
 	health = clamp(health, 0, get_max_health())
 	update_health_label()
-
-func try_interact():
-	var nearby_bodies := interaction_area.get_overlapping_bodies()
-
-	for body in nearby_bodies:
-		if body.has_method("interact"):
-			body.interact(self)
-			play_interact_animation()
-			return
-
-		if body.has_method("chop"):
-			body.chop()
-			add_wood(1)
-			gain_woodcutting_xp(10)
-			return
-
-		if body.has_method("gather"):
-			body.gather()
-			add_berries(1)
-			return
 
 func add_wood(amount):
 	add_item("wood", amount)
@@ -442,6 +427,92 @@ func open_chest(chest: Node):
 
 	if chest_loot_panel.has_method("open_chest"):
 		chest_loot_panel.call("open_chest", chest, self)
+
+func show_world_action_menu(target: Node, screen_position: Vector2):
+	if world_action_menu == null:
+		return
+
+	if target == null:
+		return
+
+	if not target.has_method("get_world_actions"):
+		return
+
+	var actions: Array = target.get_world_actions(self)
+	if actions.is_empty():
+		return
+
+	selected_world_target = target
+	world_action_menu.clear()
+
+	for action in actions:
+		world_action_menu.add_item(action["label"], action["id"])
+
+	world_action_menu.position = screen_position
+	world_action_menu.popup()
+
+func try_show_world_action_menu_at_mouse() -> bool:
+	var mouse_world_position := get_global_mouse_position()
+	var target := get_world_action_target_at_position(mouse_world_position)
+	if target == null:
+		return false
+
+	if not is_world_action_in_reach(mouse_world_position):
+		show_message("Too far away.")
+		return true
+
+	show_world_action_menu(target, get_viewport().get_mouse_position())
+	return true
+
+func get_world_action_target_at_position(world_position: Vector2) -> Node:
+	var query_shape := CircleShape2D.new()
+	query_shape.radius = world_action_click_radius
+
+	var query := PhysicsShapeQueryParameters2D.new()
+	query.shape = query_shape
+	query.transform = Transform2D(0.0, world_position)
+	query.collision_mask = 0xFFFFFFFF
+	query.collide_with_bodies = true
+	query.collide_with_areas = true
+	query.exclude = [get_rid()]
+
+	var results := get_world_2d().direct_space_state.intersect_shape(query, 16)
+	var best_target: Node = null
+	var best_distance := INF
+
+	for result in results:
+		var collider := result.get("collider") as Node
+		var target := get_world_action_target(collider)
+		if target == null:
+			continue
+
+		var actions: Array = target.get_world_actions(self)
+		if actions.is_empty():
+			continue
+
+		var distance := 0.0
+		if target is Node2D:
+			distance = world_position.distance_squared_to(target.global_position)
+
+		if distance < best_distance:
+			best_distance = distance
+			best_target = target
+
+	return best_target
+
+func get_world_action_target(collider: Node) -> Node:
+	var current := collider
+
+	while current != null:
+		if current.has_method("get_world_actions") and current.has_method("perform_world_action"):
+			return current
+
+		current = current.get_parent()
+
+	return null
+
+func is_world_action_in_reach(world_position: Vector2) -> bool:
+	return global_position.distance_to(world_position) <= world_action_reach
 
 func get_max_health():
 	return 100 + ((skill_system.get_level("constitution") - 1) * 10)
@@ -617,6 +688,15 @@ func _on_item_action_selected(action_id: int):
 		examine_item(selected_inventory_item)
 
 	selected_inventory_item = ""
+
+func _on_world_action_selected(action_id: int):
+	if selected_world_target == null:
+		return
+
+	if selected_world_target.has_method("perform_world_action"):
+		selected_world_target.perform_world_action(action_id, self)
+
+	selected_world_target = null
 
 func update_woodcutting_label():
 	var text: String = skill_system.get_label_text("woodcutting")

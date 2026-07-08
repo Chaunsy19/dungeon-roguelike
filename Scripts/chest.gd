@@ -3,6 +3,7 @@ extends StaticBody2D
 
 const FRONT_TEXTURE := preload("res://assets/Sprites/Interactables/Chest1Front.png")
 const REAR_TEXTURE := preload("res://assets/Sprites/Interactables/Chest1Rear.png")
+const WORLD_ACTION_OPEN := 101
 
 @export_enum("front", "rear") var facing := "front":
 	set(value):
@@ -54,6 +55,35 @@ func interact(player = null):
 
 	if player.has_method("open_chest"):
 		player.open_chest(self)
+
+
+func _input_event(_viewport, event: InputEvent, _shape_idx: int):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			show_action_menu(event.position)
+
+
+func show_action_menu(screen_position: Vector2):
+	var player := get_tree().current_scene.get_node_or_null("Player")
+	if player == null:
+		return
+
+	if player.has_method("show_world_action_menu"):
+		player.show_world_action_menu(self, screen_position)
+
+
+func get_world_actions(_player = null) -> Array:
+	return [
+		{
+			"label": "Open",
+			"id": WORLD_ACTION_OPEN
+		}
+	]
+
+
+func perform_world_action(action_id: int, player = null):
+	if action_id == WORLD_ACTION_OPEN:
+		interact(player)
 
 
 func get_item_counts() -> Dictionary:
