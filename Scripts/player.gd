@@ -59,6 +59,7 @@ var health_icon: TextureRect
 var inventory_list: GridContainer
 var equipment_slots: GridContainer
 var menu: Control
+var chest_loot_panel: Control
 var item_action_menu: PopupMenu
 var message_label: Label
 
@@ -75,6 +76,7 @@ func _ready():
 	hunger_icon = get_tree().current_scene.get_node_or_null("UI/HungerIcon")
 	health_icon = get_tree().current_scene.get_node_or_null("UI/HealthIcon")
 	menu = get_tree().current_scene.get_node_or_null("UI/Menu")
+	chest_loot_panel = get_tree().current_scene.get_node_or_null("UI/ChestLootPanel")
 	inventory_list = get_tree().current_scene.get_node_or_null("UI/Menu/MenuLayout/ContentPanel/Content/InventoryPage/InventoryList")
 	equipment_slots = get_tree().current_scene.get_node_or_null("UI/Menu/MenuLayout/ContentPanel/Content/EquipmentPanel/EquipmentSlots")
 	item_action_menu = get_tree().current_scene.get_node_or_null("UI/ItemActionMenu")
@@ -432,6 +434,14 @@ func show_message(message: String):
 		return
 
 	message_label.text = message
+
+func open_chest(chest: Node):
+	if chest_loot_panel == null:
+		show_message("No chest window found.")
+		return
+
+	if chest_loot_panel.has_method("open_chest"):
+		chest_loot_panel.call("open_chest", chest, self)
 
 func get_max_health():
 	return 100 + ((skill_system.get_level("constitution") - 1) * 10)

@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://vja6iq7uk12d" path="res://assets/Sprites/UI/SkillsIcon.png" id="6_skills"]
 [ext_resource type="Texture2D" uid="uid://beytq3km6a5fa" path="res://assets/Sprites/UI/InventoryIcon.png" id="7_inventory"]
 [ext_resource type="Texture2D" uid="uid://cehgyqt1h1djm" path="res://assets/Sprites/UI/SettingsIcon.png" id="8_settings"]
+[ext_resource type="Script" path="res://Scripts/chest_loot_window.gd" id="9_chest_loot"]
 
 [node name="UI" type="CanvasLayer"]
 
@@ -165,3 +166,32 @@ offset_right = 600.0
 offset_bottom = 1023.0
 
 [node name="ItemActionMenu" type="PopupMenu" parent="." unique_id=1249777893]
+
+[node name="ChestLootPanel" type="PanelContainer" parent="."]
+visible = false
+offset_left = 760.0
+offset_top = 360.0
+offset_right = 1160.0
+offset_bottom = 520.0
+script = ExtResource("9_chest_loot")
+
+[node name="Layout" type="VBoxContainer" parent="ChestLootPanel"]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="ChestLootPanel/Layout"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="ChestLootPanel/Layout/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Chest"
+
+[node name="Close" type="Button" parent="ChestLootPanel/Layout/Header"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+focus_mode = 0
+text = "X"
+
+[node name="SlotGrid" type="GridContainer" parent="ChestLootPanel/Layout"]
+layout_mode = 2
+columns = 5

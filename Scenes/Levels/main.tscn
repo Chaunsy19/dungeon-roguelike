@@ -7,8 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://cjlpixpfoc587" path="res://Scenes/Interactables/Triggers/music_trigger.tscn" id="8_5txqb"]
 [ext_resource type="PackedScene" uid="uid://bs8tix7gjass" path="res://Scenes/NPCs/troll.tscn" id="9_42g4d"]
 [ext_resource type="PackedScene" uid="uid://cukqw0cl3ppcx" path="res://Scenes/Interactables/Stations/campfire_stone.tscn" id="10_d8okw"]
-[ext_resource type="PackedScene" uid="uid://c8v6dgcc18u8j" path="res://Scenes/Interactables/Resources/tree.tscn" id="16_42g4d"]
-[ext_resource type="PackedScene" uid="uid://cdjbxw74x0ovc" path="res://Scenes/Interactables/Resources/berryBush.tscn" id="17_pgcb0"]
+[ext_resource type="PackedScene" uid="uid://bwbiqwgh48uwc" path="res://Scenes/Interactables/Containers/chest1.tscn" id="11_asd15"]
+[ext_resource type="Script" uid="uid://bnrip8wtyv0l0" path="res://Scripts/chest_item_stack.gd" id="12_lv1w4"]
 [ext_resource type="PackedScene" uid="uid://bq4u5s87mcs2h" path="res://Scenes/UI/game_ui.tscn" id="18_game_ui"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ynf5e"]
@@ -1244,6 +1244,17 @@ physics_layer_0/collision_layer = 1
 physics_layer_0/collision_mask = 17
 sources/0 = SubResource("TileSetAtlasSource_ynf5e")
 
+[sub_resource type="Resource" id="Resource_d8okw"]
+script = ExtResource("12_lv1w4")
+amount = 2
+metadata/_custom_type_script = "uid://bnrip8wtyv0l0"
+
+[sub_resource type="Resource" id="Resource_0iqpd"]
+script = ExtResource("12_lv1w4")
+item_name = "wood"
+amount = 4
+metadata/_custom_type_script = "uid://bnrip8wtyv0l0"
+
 [node name="Main" type="Node2D" unique_id=396987464]
 
 [node name="Lighting" type="Node2D" parent="." unique_id=1836196997]
@@ -1310,8 +1321,6 @@ position = Vector2(457, 38.000008)
 [node name="Campfire" parent="Stations" unique_id=1689220376 instance=ExtResource("10_d8okw")]
 position = Vector2(-151, 133)
 
-[node name="Tree" parent="." unique_id=1515198436 instance=ExtResource("16_42g4d")]
-position = Vector2(-110, 73)
-
-[node name="berryBush" parent="." unique_id=1003800444 instance=ExtResource("17_pgcb0")]
-position = Vector2(-69, 114)
+[node name="Chest1" parent="." unique_id=834394032 instance=ExtResource("11_asd15")]
+position = Vector2(-50, -91)
+starting_items = Array[ExtResource("12_lv1w4")]([SubResource("Resource_d8okw"), SubResource("Resource_0iqpd")])

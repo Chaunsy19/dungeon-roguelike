@@ -25,7 +25,7 @@ const ITEMS := {
 		"inventory_name": "Damaged Sack",
 		"inventory_tooltip": "Equipment.",
 		"examine_text": "A badly damaged canvas sack, increases your inventory space when equipped.",
-		"icon_path": "",
+		"icon_path": "res://assets/Sprites/Items/DamagedSack.png",
 		"inventory_sort_order": 30,
 		"equipment_slot": "bag",
 		"bag_slot_bonus": 4
