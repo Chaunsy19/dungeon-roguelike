@@ -669,6 +669,16 @@ func equip_item_to_first_available_slot(item_name: String):
 
 	show_message("Equipped %s." % item_database.get_display_name(item_name))
 
+func can_unequip_item_from_slot(slot_type: String) -> bool:
+	return inventory_system.can_unequip_item_from_slot(slot_type)
+
+func unequip_item_from_slot(slot_type: String):
+	var equipped_item := inventory_system.get_equipped_item(slot_type)
+	if not inventory_system.unequip_item_from_slot(slot_type):
+		return
+
+	show_message("Unequipped %s." % item_database.get_display_name(equipped_item))
+
 func get_possible_equipment_slots(item_name: String) -> Array:
 	return inventory_system.get_possible_equipment_slots(item_name)
 

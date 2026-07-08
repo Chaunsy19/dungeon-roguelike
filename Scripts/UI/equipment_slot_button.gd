@@ -4,6 +4,7 @@ const ITEM_DATABASE_SCRIPT := preload("res://Scripts/UI/item_database.gd")
 const SLOT_SIZE := Vector2(48, 48)
 
 var slot_type := ""
+var equipped_item := ""
 var player: Node = null
 var item_database = ITEM_DATABASE_SCRIPT.new()
 
@@ -24,6 +25,7 @@ func setup(new_slot_type: String, player_node: Node):
 func update_text(item_name: String):
 	clear_slot_visual()
 	icon = null
+	equipped_item = item_name
 
 	if item_name == "":
 		text = get_slot_label(slot_type)
@@ -67,6 +69,9 @@ func _can_drop_data(_position, data) -> bool:
 	if not data.has("item_name"):
 		return false
 
+	if data.get("source", "") != "inventory":
+		return false
+
 	if player == null:
 		return false
 
@@ -82,6 +87,53 @@ func _drop_data(_position, data):
 
 	if player.has_method("equip_item_to_slot"):
 		player.equip_item_to_slot(data["item_name"], slot_type)
+
+
+func _get_drag_data(_position):
+	if equipped_item == "":
+		return null
+
+	var preview := create_drag_preview()
+	set_drag_preview(preview)
+
+	return {
+		"source": "equipment",
+		"slot_type": slot_type,
+		"item_name": equipped_item,
+		"player": player
+	}
+
+
+func create_drag_preview() -> Control:
+	var texture := get_item_texture(equipped_item)
+	if texture == null:
+		var preview_label := Label.new()
+		preview_label.text = item_database.get_display_name(equipped_item)
+		preview_label.custom_minimum_size = SLOT_SIZE
+		return preview_label
+
+	var preview := Control.new()
+	preview.custom_minimum_size = SLOT_SIZE
+
+	var icon_preview := TextureRect.new()
+	icon_preview.texture = texture
+	icon_preview.size = SLOT_SIZE
+	icon_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.add_child(icon_preview)
+
+	return preview
+
+
+func _gui_input(event: InputEvent):
+	if equipped_item == "":
+		return
+
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			if player != null and player.has_method("unequip_item_from_slot"):
+				player.unequip_item_from_slot(slot_type)
+				accept_event()
 
 
 func get_slot_label(target_slot_type: String) -> String:

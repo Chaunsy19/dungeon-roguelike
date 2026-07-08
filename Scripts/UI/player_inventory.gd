@@ -48,7 +48,7 @@ func add_item(item_name: String, amount: int):
 	if not item_database.has_item(item_name):
 		push_warning("Unknown inventory item: %s" % item_name)
 
-	item_counts[item_name] = get_item_count(item_name) + amount
+	add_item_without_refresh(item_name, amount)
 	update_inventory_list()
 
 
@@ -64,14 +64,22 @@ func remove_item(item_name: String, amount: int) -> bool:
 	if current_amount < amount:
 		return false
 
+	remove_item_without_refresh(item_name, amount)
+	update_inventory_list()
+	return true
+
+
+func add_item_without_refresh(item_name: String, amount: int):
+	item_counts[item_name] = get_item_count(item_name) + amount
+
+
+func remove_item_without_refresh(item_name: String, amount: int):
+	var current_amount := get_item_count(item_name)
 	var new_amount := current_amount - amount
 	if new_amount <= 0:
 		item_counts.erase(item_name)
 	else:
 		item_counts[item_name] = new_amount
-
-	update_inventory_list()
-	return true
 
 
 func get_item_count(item_name: String) -> int:
@@ -202,6 +210,16 @@ func get_inventory_slot_count() -> int:
 	return BASE_INVENTORY_SLOT_COUNT + get_bag_slot_bonus(bag_item)
 
 
+func get_used_inventory_slot_count() -> int:
+	var used_slots := 0
+
+	for item_name in item_counts:
+		if get_item_count(item_name) > 0:
+			used_slots += 1
+
+	return used_slots
+
+
 func get_bag_slot_bonus(item_name: String) -> int:
 	return item_database.get_bag_slot_bonus(item_name)
 
@@ -227,9 +245,29 @@ func equip_item_to_slot(item_name: String, slot_type: String) -> bool:
 			player.show_message("%s cannot be equipped there." % item_database.get_display_name(item_name))
 		return false
 
+	if get_item_count(item_name) <= 0:
+		if player != null and player.has_method("show_message"):
+			player.show_message("You do not have %s in your inventory." % item_database.get_display_name(item_name))
+		return false
+
+	var previous_item: String = equipment.get(slot_type, "")
+	if previous_item == item_name:
+		if player != null and player.has_method("show_message"):
+			player.show_message("%s is already equipped there." % item_database.get_display_name(item_name))
+		return false
+
+	if not can_store_replaced_equipment(item_name, slot_type, previous_item):
+		if player != null and player.has_method("show_message"):
+			player.show_message("Not enough inventory space to swap equipment.")
+		return false
+
+	remove_item_without_refresh(item_name, 1)
 	equipment[slot_type] = item_name
-	update_equipment_slots()
-	update_inventory_list()
+
+	if previous_item != "":
+		add_item_without_refresh(previous_item, 1)
+
+	refresh_equipment_and_inventory()
 	return true
 
 
@@ -262,3 +300,72 @@ func get_possible_equipment_slots(item_name: String) -> Array:
 
 func get_item_equipment_slot(item_name: String) -> String:
 	return item_database.get_equipment_slot(item_name)
+
+
+func can_store_replaced_equipment(item_name: String, slot_type: String, previous_item: String) -> bool:
+	if previous_item == "":
+		return true
+
+	var projected_counts := item_counts.duplicate()
+	var item_amount := int(projected_counts.get(item_name, 0)) - 1
+	if item_amount <= 0:
+		projected_counts.erase(item_name)
+	else:
+		projected_counts[item_name] = item_amount
+
+	projected_counts[previous_item] = int(projected_counts.get(previous_item, 0)) + 1
+
+	var projected_slot_count := get_inventory_slot_count()
+	if slot_type == "bag":
+		projected_slot_count = BASE_INVENTORY_SLOT_COUNT + get_bag_slot_bonus(item_name)
+
+	var projected_used_slots := 0
+	for projected_item in projected_counts:
+		if int(projected_counts[projected_item]) > 0:
+			projected_used_slots += 1
+
+	return projected_used_slots <= projected_slot_count
+
+
+func get_equipped_item(slot_type: String) -> String:
+	return equipment.get(slot_type, "")
+
+
+func can_unequip_item_from_slot(slot_type: String) -> bool:
+	var equipped_item: String = equipment.get(slot_type, "")
+	if equipped_item == "":
+		return false
+
+	var projected_slot_count := get_inventory_slot_count()
+	if slot_type == "bag":
+		projected_slot_count -= get_bag_slot_bonus(equipped_item)
+
+	var projected_used_slots := get_used_inventory_slot_count()
+	if get_item_count(equipped_item) <= 0:
+		projected_used_slots += 1
+
+	return projected_used_slots <= projected_slot_count
+
+
+func unequip_item_from_slot(slot_type: String) -> bool:
+	var equipped_item: String = equipment.get(slot_type, "")
+	if equipped_item == "":
+		return false
+
+	if not can_unequip_item_from_slot(slot_type):
+		if player != null and player.has_method("show_message"):
+			player.show_message("Not enough inventory space to unequip %s." % item_database.get_display_name(equipped_item))
+		return false
+
+	equipment[slot_type] = ""
+	add_item_without_refresh(equipped_item, 1)
+	refresh_equipment_and_inventory()
+	return true
+
+
+func refresh_equipment_and_inventory():
+	update_equipment_slots()
+	update_inventory_list()
+
+	if player != null and player.has_method("update_item_count_labels"):
+		player.update_item_count_labels()

@@ -103,6 +103,33 @@ func _get_drag_data(_position):
 	}
 
 
+func _can_drop_data(_position, data) -> bool:
+	if typeof(data) != TYPE_DICTIONARY:
+		return false
+
+	if data.get("source", "") != "equipment":
+		return false
+
+	if not data.has("slot_type"):
+		return false
+
+	if player == null:
+		return false
+
+	if not player.has_method("can_unequip_item_from_slot"):
+		return false
+
+	return player.can_unequip_item_from_slot(data["slot_type"])
+
+
+func _drop_data(_position, data):
+	if player == null:
+		return
+
+	if player.has_method("unequip_item_from_slot"):
+		player.unequip_item_from_slot(data["slot_type"])
+
+
 func create_drag_preview() -> Control:
 	var texture := get_item_texture()
 	if texture == null:

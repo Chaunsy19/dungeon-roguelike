@@ -1,5 +1,9 @@
 extends RefCounted
 
+const TAG_EDIBLE := "Edible"
+const TAG_EQUIPMENT := "Equipment"
+const TAG_FIRESTARTER := "Firestarter"
+
 # Add new items here. The item key, like "berries", is what code and save data should use.
 const ITEMS := {
 	"berries": {
@@ -9,8 +13,11 @@ const ITEMS := {
 		"examine_text": "Small wild berries. They restore hunger when eaten.",
 		"icon_path": "res://assets/Sprites/Items/BerryIcon.png",
 		"inventory_sort_order": 10,
-		"hunger_restore": 25,
-		"can_eat": true
+		"tags": {
+			TAG_EDIBLE: {
+				"hunger_restore": 25
+			}
+		}
 	},
 	"wood": {
 		"display_name": "Wood",
@@ -27,8 +34,12 @@ const ITEMS := {
 		"examine_text": "A badly damaged canvas sack, increases your inventory space when equipped.",
 		"icon_path": "res://assets/Sprites/Items/DamagedSack.png",
 		"inventory_sort_order": 30,
-		"equipment_slot": "bag",
-		"bag_slot_bonus": 4
+		"tags": {
+			TAG_EQUIPMENT: {
+				"slot": "bag",
+				"bag_slot_bonus": 4
+			}
+		}
 	}
 }
 
@@ -68,20 +79,47 @@ func get_examine_text(item_name: String) -> String:
 	return get_item_value(item_name, "examine_text", "%s: Nothing interesting." % get_display_name(item_name))
 
 
+func get_tags(item_name: String) -> Dictionary:
+	return get_item_value(item_name, "tags", {})
+
+
+func has_tag(item_name: String, tag_name: String) -> bool:
+	return get_tags(item_name).has(tag_name)
+
+
+func get_tag_data(item_name: String, tag_name: String) -> Dictionary:
+	if not has_tag(item_name, tag_name):
+		return {}
+
+	var tag_data = get_tags(item_name)[tag_name]
+	if tag_data is Dictionary:
+		return tag_data
+
+	return {}
+
+
+func get_tag_value(item_name: String, tag_name: String, key: String, default_value):
+	return get_tag_data(item_name, tag_name).get(key, default_value)
+
+
+func is_firestarter(item_name: String) -> bool:
+	return has_tag(item_name, TAG_FIRESTARTER)
+
+
 func can_eat(item_name: String) -> bool:
-	return bool(get_item_value(item_name, "can_eat", false))
+	return has_tag(item_name, TAG_EDIBLE)
 
 
 func get_hunger_restore(item_name: String) -> int:
-	return int(get_item_value(item_name, "hunger_restore", 0))
+	return int(get_tag_value(item_name, TAG_EDIBLE, "hunger_restore", 0))
 
 
 func get_equipment_slot(item_name: String) -> String:
-	return get_item_value(item_name, "equipment_slot", "")
+	return get_tag_value(item_name, TAG_EQUIPMENT, "slot", "")
 
 
 func get_bag_slot_bonus(item_name: String) -> int:
-	return int(get_item_value(item_name, "bag_slot_bonus", 0))
+	return int(get_tag_value(item_name, TAG_EQUIPMENT, "bag_slot_bonus", 0))
 
 
 func get_item_value(item_name: String, key: String, default_value):
