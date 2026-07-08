@@ -3,18 +3,13 @@
 [ext_resource type="Script" uid="uid://icm7lpd6eq0i" path="res://Scripts/world_lighting.gd" id="1_5sf7f"]
 [ext_resource type="PackedScene" uid="uid://du1w7ue4b0875" path="res://Scenes/Lighting/light_source.tscn" id="2_d8okw"]
 [ext_resource type="Texture2D" uid="uid://bk54hmgnqgtd" path="res://assets/Tiles/MapPacks/Dungeon_Tiles.png" id="3_0iqpd"]
-[ext_resource type="Texture2D" uid="uid://dytslx761pef4" path="res://assets/Sprites/HUD/heart_full.png" id="4_asd15"]
-[ext_resource type="Texture2D" uid="uid://ct0fk633y6ljw" path="res://assets/Sprites/HUD/hunger_full.png" id="5_lv1w4"]
-[ext_resource type="Script" uid="uid://bbpav6hslvibk" path="res://Scripts/menu.gd" id="6_snpdt"]
 [ext_resource type="PackedScene" uid="uid://bkj2r1q2y8sdd" path="res://Scenes/Player/player.tscn" id="7_irn1k"]
 [ext_resource type="PackedScene" uid="uid://cjlpixpfoc587" path="res://Scenes/Interactables/Triggers/music_trigger.tscn" id="8_5txqb"]
 [ext_resource type="PackedScene" uid="uid://bs8tix7gjass" path="res://Scenes/NPCs/troll.tscn" id="9_42g4d"]
 [ext_resource type="PackedScene" uid="uid://cukqw0cl3ppcx" path="res://Scenes/Interactables/Stations/campfire_stone.tscn" id="10_d8okw"]
-[ext_resource type="Texture2D" uid="uid://c5iwgeui2cdau" path="res://assets/Sprites/UI/CharacterIcon.png" id="11_character"]
-[ext_resource type="Texture2D" uid="uid://dor1poiewx4hy" path="res://assets/Sprites/UI/EquipmentIcon.png" id="12_equipment"]
-[ext_resource type="Texture2D" uid="uid://vja6iq7uk12d" path="res://assets/Sprites/UI/SkillsIcon.png" id="13_skills"]
-[ext_resource type="Texture2D" uid="uid://beytq3km6a5fa" path="res://assets/Sprites/UI/InventoryIcon.png" id="14_inventory"]
-[ext_resource type="Texture2D" uid="uid://cehgyqt1h1djm" path="res://assets/Sprites/UI/SettingsIcon.png" id="15_settings"]
+[ext_resource type="PackedScene" uid="uid://c8v6dgcc18u8j" path="res://Scenes/Interactables/Resources/tree.tscn" id="16_42g4d"]
+[ext_resource type="PackedScene" uid="uid://cdjbxw74x0ovc" path="res://Scenes/Interactables/Resources/berryBush.tscn" id="17_pgcb0"]
+[ext_resource type="PackedScene" uid="uid://bq4u5s87mcs2h" path="res://Scenes/UI/game_ui.tscn" id="18_game_ui"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ynf5e"]
 polygon = PackedVector2Array(-8, 2.666667, -8, -8, 8, -8, 8, 2.666667)
@@ -1252,7 +1247,6 @@ sources/0 = SubResource("TileSetAtlasSource_ynf5e")
 [node name="Main" type="Node2D" unique_id=396987464]
 
 [node name="Lighting" type="Node2D" parent="." unique_id=1836196997]
-visible = false
 script = ExtResource("1_5sf7f")
 world_darkness = 100.0
 darkness_tint = Color(0.30008405, 0.2942975, 0.30297443, 1)
@@ -1296,162 +1290,7 @@ tile_set = SubResource("TileSet_riqys")
 
 [node name="DungeonInteractables" type="TileMapLayer" parent="TileMaps" unique_id=1021669868]
 
-[node name="UI" type="CanvasLayer" parent="." unique_id=1130398693]
-
-[node name="HealthIcon" type="TextureRect" parent="UI" unique_id=1624935078]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 48.0
-offset_bottom = 48.0
-tooltip_text = "Health: 100 / 100"
-texture = ExtResource("4_asd15")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="HungerIcon" type="TextureRect" parent="UI" unique_id=842104221]
-offset_left = 8.0
-offset_top = 54.0
-offset_right = 48.0
-offset_bottom = 94.0
-tooltip_text = "Hunger: 100 / 100"
-texture = ExtResource("5_lv1w4")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Menu" type="Control" parent="UI" unique_id=1565357127]
-layout_mode = 3
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 0
-grow_vertical = 0
-script = ExtResource("6_snpdt")
-
-[node name="MenuLayout" type="Control" parent="UI/Menu" unique_id=32704201]
-anchors_preset = 0
-
-[node name="ContentPanel" type="PanelContainer" parent="UI/Menu/MenuLayout" unique_id=483631874]
-layout_mode = 0
-
-[node name="Content" type="HBoxContainer" parent="UI/Menu/MenuLayout/ContentPanel" unique_id=1117246105]
-layout_mode = 2
-
-[node name="CharacterPage" type="VBoxContainer" parent="UI/Menu/MenuLayout/ContentPanel/Content" unique_id=1179260730]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UI/Menu/MenuLayout/ContentPanel/Content/CharacterPage" unique_id=163590222]
-layout_mode = 2
-text = "Character Stats
-Armor: 0
-Defense: 0"
-
-[node name="EquipmentPanel" type="VBoxContainer" parent="UI/Menu/MenuLayout/ContentPanel/Content" unique_id=46808741]
-visible = false
-layout_mode = 2
-
-[node name="EquipmentTitle" type="Label" parent="UI/Menu/MenuLayout/ContentPanel/Content/EquipmentPanel" unique_id=330548056]
-layout_mode = 2
-text = "Equipment"
-
-[node name="EquipmentSlots" type="GridContainer" parent="UI/Menu/MenuLayout/ContentPanel/Content/EquipmentPanel" unique_id=1203060848]
-layout_mode = 2
-columns = 5
-
-[node name="SkillsPage" type="GridContainer" parent="UI/Menu/MenuLayout/ContentPanel/Content" unique_id=1980526927]
-visible = false
-layout_mode = 2
-columns = 5
-
-[node name="WoodcuttingSkillLabel" type="Button" parent="UI/Menu/MenuLayout/ContentPanel/Content/SkillsPage" unique_id=2132865523]
-custom_minimum_size = Vector2(48, 48)
-layout_mode = 2
-tooltip_text = "Woodcutting: 1 | XP 0 / 30"
-focus_mode = 0
-text = "Wood
-1"
-
-[node name="ConstitutionSkillLabel" type="Button" parent="UI/Menu/MenuLayout/ContentPanel/Content/SkillsPage" unique_id=1052439]
-custom_minimum_size = Vector2(48, 48)
-layout_mode = 2
-tooltip_text = "Level: 1 XP 0 / 30"
-focus_mode = 0
-text = "Con
-1"
-
-[node name="InventoryPage" type="VBoxContainer" parent="UI/Menu/MenuLayout/ContentPanel/Content" unique_id=1888240123]
-visible = false
-layout_mode = 2
-
-[node name="InventoryList" type="GridContainer" parent="UI/Menu/MenuLayout/ContentPanel/Content/InventoryPage" unique_id=476602996]
-layout_mode = 2
-columns = 5
-
-[node name="SettingsPage" type="VBoxContainer" parent="UI/Menu/MenuLayout/ContentPanel/Content" unique_id=1187300695]
-visible = false
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UI/Menu/MenuLayout/ContentPanel/Content/SettingsPage" unique_id=1328780650]
-layout_mode = 2
-text = "Settings"
-
-[node name="Reload" type="Button" parent="UI/Menu/MenuLayout/ContentPanel/Content/SettingsPage" unique_id=160821171]
-custom_minimum_size = Vector2(120, 32)
-layout_mode = 2
-focus_mode = 0
-text = "Reload"
-
-[node name="MenuButtons" type="HBoxContainer" parent="UI/Menu/MenuLayout" unique_id=1811292273]
-layout_mode = 0
-
-[node name="Character" type="Button" parent="UI/Menu/MenuLayout/MenuButtons" unique_id=254742350]
-custom_minimum_size = Vector2(56, 56)
-layout_mode = 2
-tooltip_text = "Character"
-icon = ExtResource("11_character")
-flat = true
-expand_icon = true
-
-[node name="Equipment" type="Button" parent="UI/Menu/MenuLayout/MenuButtons" unique_id=1013621118]
-custom_minimum_size = Vector2(56, 56)
-layout_mode = 2
-tooltip_text = "Equipment"
-icon = ExtResource("12_equipment")
-flat = true
-expand_icon = true
-
-[node name="Skills" type="Button" parent="UI/Menu/MenuLayout/MenuButtons" unique_id=1080650847]
-custom_minimum_size = Vector2(56, 56)
-layout_mode = 2
-tooltip_text = "Skills"
-icon = ExtResource("13_skills")
-flat = true
-expand_icon = true
-
-[node name="Inventory" type="Button" parent="UI/Menu/MenuLayout/MenuButtons" unique_id=292118671]
-custom_minimum_size = Vector2(56, 56)
-layout_mode = 2
-tooltip_text = "Inventory"
-icon = ExtResource("14_inventory")
-flat = true
-expand_icon = true
-
-[node name="Settings" type="Button" parent="UI/Menu/MenuLayout/MenuButtons" unique_id=912527689]
-custom_minimum_size = Vector2(56, 56)
-layout_mode = 2
-tooltip_text = "Settings"
-icon = ExtResource("15_settings")
-flat = true
-expand_icon = true
-
-[node name="MessageLabel" type="Label" parent="UI" unique_id=1825688176]
-offset_left = 16.0
-offset_top = 1000.0
-offset_right = 600.0
-offset_bottom = 1023.0
-
-[node name="ItemActionMenu" type="PopupMenu" parent="UI" unique_id=1249777893]
+[node name="UI" parent="." instance=ExtResource("18_game_ui")]
 
 [node name="Player" parent="." unique_id=115543656 instance=ExtResource("7_irn1k")]
 position = Vector2(-148, -80)
@@ -1470,3 +1309,9 @@ position = Vector2(457, 38.000008)
 
 [node name="Campfire" parent="Stations" unique_id=1689220376 instance=ExtResource("10_d8okw")]
 position = Vector2(-151, 133)
+
+[node name="Tree" parent="." unique_id=1515198436 instance=ExtResource("16_42g4d")]
+position = Vector2(-110, 73)
+
+[node name="berryBush" parent="." unique_id=1003800444 instance=ExtResource("17_pgcb0")]
+position = Vector2(-69, 114)
