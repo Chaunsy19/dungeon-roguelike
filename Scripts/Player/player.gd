@@ -53,6 +53,8 @@ var inventory_system = PLAYER_INVENTORY_SCRIPT.new()
 var skill_system = PLAYER_SKILLS_SCRIPT.new()
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var held_item_sprite: Sprite2D = $HeldItemSprite
+@onready var held_item_light: PointLight2D = $HeldItemLight
 
 var woodcutting_label: Label
 var woodcutting_skill_label: Button
@@ -73,6 +75,8 @@ func _ready():
 	base_movement_animation_speed = speed
 	hunger = clamp(starting_hunger, 0.0, 100.0)
 	setup_player_animations()
+	if animated_sprite != null:
+		animated_sprite.frame_changed.connect(update_held_item_visual)
 
 	woodcutting_label = get_tree().current_scene.get_node_or_null("UI/WoodcuttingLabel")
 	woodcutting_skill_label = get_tree().current_scene.get_node_or_null("UI/Menu/MenuLayout/ContentPanel/Content/SkillsPage/WoodcuttingSkillLabel")
@@ -96,6 +100,7 @@ func _ready():
 		world_action_menu.id_pressed.connect(_on_world_action_selected)
 
 	inventory_system.setup(self, inventory_list, equipment_slots, menu)
+	update_held_item_visual()
 
 	update_woodcutting_label()
 	update_wood_label()
@@ -334,6 +339,7 @@ func play_directional_animation(animation_type: String, direction_name: String):
 		return
 
 	animated_sprite.flip_h = should_flip_direction(direction_name)
+	update_held_item_visual()
 
 	if animation_type != "run":
 		animated_sprite.speed_scale = 1.0
@@ -661,12 +667,14 @@ func equip_item_to_slot(item_name: String, slot_type: String):
 	if not inventory_system.equip_item_to_slot(item_name, slot_type):
 		return
 
+	update_held_item_visual()
 	show_message("Equipped %s." % item_database.get_display_name(item_name))
 
 func equip_item_to_first_available_slot(item_name: String):
 	if not inventory_system.equip_item_to_first_available_slot(item_name):
 		return
 
+	update_held_item_visual()
 	show_message("Equipped %s." % item_database.get_display_name(item_name))
 
 func can_unequip_item_from_slot(slot_type: String) -> bool:
@@ -677,7 +685,75 @@ func unequip_item_from_slot(slot_type: String):
 	if not inventory_system.unequip_item_from_slot(slot_type):
 		return
 
+	update_held_item_visual()
 	show_message("Unequipped %s." % item_database.get_display_name(equipped_item))
+
+func update_held_item_visual():
+	if held_item_sprite == null:
+		return
+
+	var held_item := inventory_system.get_equipped_item("tool")
+	if held_item == "":
+		hide_held_item_visual()
+		return
+
+	var texture_path := item_database.get_held_texture_path(held_item)
+	if texture_path == "":
+		hide_held_item_visual()
+		return
+
+	if not ResourceLoader.exists(texture_path):
+		hide_held_item_visual()
+		return
+
+	var is_flipped := should_flip_direction(facing_direction)
+	var held_position := get_held_item_position(held_item, is_flipped)
+
+	held_item_sprite.texture = load(texture_path) as Texture2D
+	held_item_sprite.visible = true
+	held_item_sprite.position = held_position
+	held_item_sprite.scale = Vector2.ONE * item_database.get_held_scale(held_item)
+	held_item_sprite.z_index = item_database.get_held_z_index(held_item, facing_direction)
+	held_item_sprite.flip_h = is_flipped
+
+	update_held_item_light(held_item, held_position)
+
+func hide_held_item_visual():
+	held_item_sprite.visible = false
+	held_item_sprite.texture = null
+
+	if held_item_light != null:
+		held_item_light.visible = false
+
+func get_held_item_position(held_item: String, is_flipped: bool) -> Vector2:
+	var animation_type := get_current_animation_type()
+	var frame_index := 0
+
+	if animated_sprite != null:
+		frame_index = animated_sprite.frame
+
+	return item_database.get_held_offset(held_item, facing_direction) + item_database.get_held_frame_offset(held_item, animation_type, frame_index, is_flipped)
+
+func get_current_animation_type() -> String:
+	if animated_sprite == null:
+		return "idle"
+
+	var animation_name := String(animated_sprite.animation)
+	if animation_name == "":
+		return "idle"
+
+	return animation_name.split("_")[0]
+
+func update_held_item_light(held_item: String, held_position: Vector2):
+	if held_item_light == null:
+		return
+
+	if not item_database.has_held_light(held_item):
+		held_item_light.visible = false
+		return
+
+	held_item_light.visible = true
+	held_item_light.position = held_position + item_database.get_held_light_offset(held_item)
 
 func get_possible_equipment_slots(item_name: String) -> Array:
 	return inventory_system.get_possible_equipment_slots(item_name)

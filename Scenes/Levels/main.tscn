@@ -1073,7 +1073,9 @@ texture = ExtResource("3_0iqpd")
 11:7/0/physics_layer_0/polygon_0/points = PackedVector2Array(-2.0650015, 8, -2.0271115, 5.967664, -1.0798631, 5.967664, -1.0798631, 5.020416, 1.8755517, 4.944636, 1.9513316, 3.0122495, 8, 3.0501394, 8, 8)
 14:7/0 = 0
 0:8/0 = 0
+0:8/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:8/0 = 0
+1:8/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 2:8/0 = 0
 3:8/0 = 0
 4:8/0 = 0
@@ -1086,7 +1088,9 @@ texture = ExtResource("3_0iqpd")
 11:8/0 = 0
 14:8/0 = 0
 0:9/0 = 0
+0:9/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:9/0 = 0
+1:9/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 2:9/0 = 0
 2:9/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 8, -8, -8, 8, -8, 8, 8)
 3:9/0 = 0
@@ -1265,10 +1269,14 @@ script = ExtResource("12_lv1w4")
 item_name = "bent_lockpick"
 metadata/_custom_type_script = "uid://bnrip8wtyv0l0"
 
+[sub_resource type="Resource" id="Resource_lv1w4"]
+script = ExtResource("12_lv1w4")
+item_name = "lantern"
+metadata/_custom_type_script = "uid://bnrip8wtyv0l0"
+
 [node name="Main" type="Node2D" unique_id=396987464]
 
 [node name="Lighting" type="Node2D" parent="." unique_id=1836196997]
-visible = false
 script = ExtResource("1_5sf7f")
 world_darkness = 100.0
 darkness_tint = Color(0.101192825, 0.09817054, 0.10119287, 1)
@@ -1313,7 +1321,7 @@ tile_set = SubResource("TileSet_7mycd")
 
 [node name="DungeonFloorCovering" type="TileMapLayer" parent="TileMaps" unique_id=964362748]
 light_mask = 3
-tile_map_data = PackedByteArray("AAAOAPn/AAAMAAQAAAAPAPn/AAANAAQAAAAPAPr/AAALAAEAAAAPAPv/AAALAAIAAAAOAPr/AAAKAAEAAAAOAPv/AAAKAAIAAAAOAPz/AAAKAAMAAAAPAPz/AAALAAMAAAANAPn/AAALAAMAAAAMAPn/AAAKAAMAAAA=")
+tile_map_data = PackedByteArray("AAAOAPn/AAAMAAQAAAAPAPn/AAANAAQAAAAPAPr/AAALAAEAAAAPAPv/AAALAAIAAAAOAPr/AAAKAAEAAAAOAPv/AAAKAAIAAAAOAPz/AAAKAAMAAAAPAPz/AAALAAMAAAANAPn/AAALAAMAAAAMAPn/AAAKAAMAAAAbAAQAAAAHAA0AAAAcAAQAAAAKAAsAAAAsAPj/AAAFAAoAAAAsAPn/AAAFAAsAAAAsAPr/AAAFAAwAAAAsAPv/AAAFAA0AAAAtAPj/AAAGAAoAAAAtAPn/AAAGAAsAAAAtAPr/AAAGAAwAAAAtAPv/AAAGAA0AAAA=")
 tile_set = SubResource("TileSet_riqys")
 
 [node name="DungeonWalls" type="TileMapLayer" parent="TileMaps" unique_id=1960214332]
@@ -1345,4 +1353,4 @@ position = Vector2(-151, 133)
 
 [node name="Chest1" parent="." unique_id=834394032 instance=ExtResource("11_asd15")]
 position = Vector2(69, -91)
-starting_items = Array[ExtResource("12_lv1w4")]([SubResource("Resource_d8okw"), SubResource("Resource_0iqpd"), SubResource("Resource_a3d8c"), SubResource("Resource_asd15")])
+starting_items = Array[ExtResource("12_lv1w4")]([SubResource("Resource_d8okw"), SubResource("Resource_0iqpd"), SubResource("Resource_a3d8c"), SubResource("Resource_asd15"), SubResource("Resource_lv1w4")])

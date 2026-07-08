@@ -155,5 +155,7 @@ func get_slot_label(target_slot_type: String) -> String:
 		return "Neck"
 	if target_slot_type == "bag":
 		return "Bag"
+	if target_slot_type == "tool":
+		return "Tool"
 
 	return target_slot_type.capitalize()

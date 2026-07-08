@@ -1,10 +1,10 @@
 extends RefCounted
 
 const BASE_INVENTORY_SLOT_COUNT := 10
-const EQUIPMENT_SLOT_TYPES := ["head", "chest", "legs", "gloves", "boots", "ring_1", "ring_2", "necklace", "bag"]
+const EQUIPMENT_SLOT_TYPES := ["head", "chest", "legs", "gloves", "boots", "ring_1", "ring_2", "necklace", "bag", "tool"]
 const EQUIPMENT_SLOT_LAYOUT := [
 	"", "", "head", "", "",
-	"gloves", "", "necklace", "", "boots",
+	"gloves", "tool", "necklace", "", "boots",
 	"", "ring_1", "chest", "ring_2", "",
 	"", "", "legs", "bag", ""
 ]
