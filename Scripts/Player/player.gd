@@ -18,6 +18,7 @@ extends CharacterBody2D
 @export var health_regen_delay_after_damage := 5.0
 @export var world_action_click_radius := 16.0
 @export var world_action_reach := 48.0
+@export var action_menu_mouse_cancel_distance := 80.0
 
 const ACTION_EAT := 1
 const ACTION_EXAMINE := 2
@@ -106,6 +107,7 @@ func _ready():
 func _physics_process(delta):
 	handle_hit_flash(delta)
 	handle_attack_timers(delta)
+	handle_action_menu_mouse_cancel()
 	handle_movement(delta)
 	handle_hunger(delta)
 	handle_starvation_damage(delta)
@@ -450,6 +452,28 @@ func show_world_action_menu(target: Node, screen_position: Vector2):
 
 	world_action_menu.position = screen_position
 	world_action_menu.popup()
+
+func handle_action_menu_mouse_cancel():
+	close_popup_if_mouse_is_away(world_action_menu, true)
+	close_popup_if_mouse_is_away(item_action_menu, false)
+
+func close_popup_if_mouse_is_away(popup_menu: PopupMenu, clears_world_target: bool):
+	if popup_menu == null:
+		return
+
+	if not popup_menu.visible:
+		return
+
+	var popup_rect := Rect2(Vector2(popup_menu.position), Vector2(popup_menu.size)).grow(action_menu_mouse_cancel_distance)
+	if popup_rect.has_point(get_viewport().get_mouse_position()):
+		return
+
+	popup_menu.hide()
+
+	if clears_world_target:
+		selected_world_target = null
+	else:
+		selected_inventory_item = ""
 
 func try_show_world_action_menu_at_mouse() -> bool:
 	var mouse_world_position := get_global_mouse_position()

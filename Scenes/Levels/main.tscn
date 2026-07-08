@@ -1258,6 +1258,7 @@ metadata/_custom_type_script = "uid://bnrip8wtyv0l0"
 [node name="Main" type="Node2D" unique_id=396987464]
 
 [node name="Lighting" type="Node2D" parent="." unique_id=1836196997]
+visible = false
 script = ExtResource("1_5sf7f")
 world_darkness = 100.0
 darkness_tint = Color(0.101192825, 0.09817054, 0.10119287, 1)
@@ -1315,6 +1316,7 @@ tile_set = SubResource("TileSet_bhunq")
 
 [node name="Player" parent="." unique_id=115543656 instance=ExtResource("7_irn1k")]
 position = Vector2(-148, -80)
+world_action_click_radius = 2.0
 
 [node name="MusicTriggers" type="Node2D" parent="." unique_id=641741231]
 

@@ -129,7 +129,7 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_interaction"]
-radius = 18.0
+radius = 11.045361
 
 [node name="Campfire" type="StaticBody2D" unique_id=1689220376]
 script = ExtResource("4_campfire_script")
@@ -163,4 +163,5 @@ stream = ExtResource("5_fire_start")
 stream = ExtResource("6_fire_snuffed")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=577096193]
+position = Vector2(0, 2)
 shape = SubResource("CircleShape2D_interaction")
