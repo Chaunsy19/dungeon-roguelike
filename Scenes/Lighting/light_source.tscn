@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://du1w7ue4b0875"]
 
-[ext_resource type="Script" uid="uid://cre1673wjrse1" path="res://Scripts/light_source.gd" id="1_light_script"]
+[ext_resource type="Script" uid="uid://cre1673wjrse1" path="res://Scripts/Lighting/light_source.gd" id="1_light_script"]
 [ext_resource type="Texture2D" uid="uid://cpfop77y1eeuv" path="res://assets/lights/radial_light.png" id="2_light_texture"]
 
 [node name="LightSource" type="Node2D" unique_id=1856836753]

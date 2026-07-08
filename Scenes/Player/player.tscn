@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bkj2r1q2y8sdd"]
 
-[ext_resource type="Script" uid="uid://cc23p0pxd2tek" path="res://Scripts/player.gd" id="1_cvnsp"]
+[ext_resource type="Script" uid="uid://cc23p0pxd2tek" path="res://Scripts/Player/player.gd" id="1_cvnsp"]
 [ext_resource type="Texture2D" uid="uid://vi1ndfuop4x5" path="res://assets/player/idle_r0_0.png" id="2_6t5aa"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_player_preview"]

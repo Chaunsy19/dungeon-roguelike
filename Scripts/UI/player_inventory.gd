@@ -8,9 +8,9 @@ const EQUIPMENT_SLOT_LAYOUT := [
 	"", "ring_1", "chest", "ring_2", "",
 	"", "", "legs", "bag", ""
 ]
-const INVENTORY_SLOT_BUTTON_SCRIPT := preload("res://Scripts/inventory_slot_button.gd")
-const EQUIPMENT_SLOT_BUTTON_SCRIPT := preload("res://Scripts/equipment_slot_button.gd")
-const ITEM_DATABASE_SCRIPT := preload("res://Scripts/item_database.gd")
+const INVENTORY_SLOT_BUTTON_SCRIPT := preload("res://Scripts/UI/inventory_slot_button.gd")
+const EQUIPMENT_SLOT_BUTTON_SCRIPT := preload("res://Scripts/UI/equipment_slot_button.gd")
+const ITEM_DATABASE_SCRIPT := preload("res://Scripts/UI/item_database.gd")
 
 var player: Node
 var inventory_list: GridContainer

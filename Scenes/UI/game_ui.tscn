@@ -2,13 +2,13 @@
 
 [ext_resource type="Texture2D" uid="uid://dytslx761pef4" path="res://assets/Sprites/HUD/heart_full.png" id="1_health"]
 [ext_resource type="Texture2D" uid="uid://ct0fk633y6ljw" path="res://assets/Sprites/HUD/hunger_full.png" id="2_hunger"]
-[ext_resource type="Script" uid="uid://bbpav6hslvibk" path="res://Scripts/menu.gd" id="3_menu"]
+[ext_resource type="Script" uid="uid://bbpav6hslvibk" path="res://Scripts/UI/menu.gd" id="3_menu"]
 [ext_resource type="Texture2D" uid="uid://c5iwgeui2cdau" path="res://assets/Sprites/UI/CharacterIcon.png" id="4_character"]
 [ext_resource type="Texture2D" uid="uid://dor1poiewx4hy" path="res://assets/Sprites/UI/EquipmentIcon.png" id="5_equipment"]
 [ext_resource type="Texture2D" uid="uid://vja6iq7uk12d" path="res://assets/Sprites/UI/SkillsIcon.png" id="6_skills"]
 [ext_resource type="Texture2D" uid="uid://beytq3km6a5fa" path="res://assets/Sprites/UI/InventoryIcon.png" id="7_inventory"]
 [ext_resource type="Texture2D" uid="uid://cehgyqt1h1djm" path="res://assets/Sprites/UI/SettingsIcon.png" id="8_settings"]
-[ext_resource type="Script" path="res://Scripts/chest_loot_window.gd" id="9_chest_loot"]
+[ext_resource type="Script" uid="uid://cfperhdvnn3if" path="res://Scripts/UI/chest_loot_window.gd" id="9_chest_loot"]
 
 [node name="UI" type="CanvasLayer"]
 

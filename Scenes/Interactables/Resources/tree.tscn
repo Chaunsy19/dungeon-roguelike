@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c8v6dgcc18u8j"]
 
-[ext_resource type="Script" uid="uid://b8u56uiyy2mxp" path="res://Scripts/tree.gd" id="1_0vwjc"]
+[ext_resource type="Script" uid="uid://b8u56uiyy2mxp" path="res://Scripts/Resources/tree.gd" id="1_0vwjc"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_bhunq"]
 radius = 24.0

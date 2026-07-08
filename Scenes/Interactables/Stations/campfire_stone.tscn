@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://qrwm5mn4l1ub" path="res://assets/Sprites/SpriteSheets/Fires/Fire_01-Sheet.png" id="2_5ij71"]
 [ext_resource type="Texture2D" uid="uid://3gpa1evw2ve4" path="res://assets/Sprites/SpriteSheets/Fires/Smoke-Sheet.png" id="3_5ij71"]
 [ext_resource type="PackedScene" uid="uid://du1w7ue4b0875" path="res://Scenes/Lighting/light_source.tscn" id="3_8doo6"]
-[ext_resource type="Script" uid="uid://n3l637vabik0" path="res://Scripts/campfire_stone.gd" id="4_campfire_script"]
+[ext_resource type="Script" uid="uid://n3l637vabik0" path="res://Scripts/Interactables/Stations/campfire_stone.gd" id="4_campfire_script"]
 [ext_resource type="AudioStream" uid="uid://bf5b7m3mr3xap" path="res://assets/audio/fireStart.wav" id="5_fire_start"]
 [ext_resource type="AudioStream" uid="uid://dr55c7g6vxla4" path="res://assets/audio/fireSnuffed.wav" id="6_fire_snuffed"]
 

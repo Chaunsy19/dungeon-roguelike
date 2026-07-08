@@ -1,6 +1,6 @@
 extends Button
 
-const ITEM_DATABASE_SCRIPT := preload("res://Scripts/item_database.gd")
+const ITEM_DATABASE_SCRIPT := preload("res://Scripts/UI/item_database.gd")
 const SLOT_SIZE := Vector2(48, 48)
 
 var item_name := ""

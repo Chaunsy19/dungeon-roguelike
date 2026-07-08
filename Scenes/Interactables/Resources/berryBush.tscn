@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cdjbxw74x0ovc"]
 
-[ext_resource type="Script" uid="uid://bscxfj7aip0ie" path="res://Scripts/berry_bush.gd" id="1_h0mu2"]
+[ext_resource type="Script" uid="uid://bscxfj7aip0ie" path="res://Scripts/Resources/berry_bush.gd" id="1_h0mu2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_riqys"]
 radius = 18.0

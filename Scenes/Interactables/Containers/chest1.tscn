@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bwbiqwgh48uwc"]
 
-[ext_resource type="Script" uid="uid://mqykldq8wjo1" path="res://Scripts/chest.gd" id="1_chest"]
+[ext_resource type="Script" uid="uid://mqykldq8wjo1" path="res://Scripts/Interactables/Containers/chest.gd" id="1_chest"]
 [ext_resource type="Texture2D" uid="uid://bgs3v8fwmj1kf" path="res://assets/Sprites/Interactables/Chest1Front.png" id="2_front"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bhunq"]

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bs8tix7gjass"]
 
-[ext_resource type="Script" uid="uid://ck743kgjycve6" path="res://Scripts/troll.gd" id="1_2mvui"]
+[ext_resource type="Script" uid="uid://ck743kgjycve6" path="res://Scripts/NPCs/troll.gd" id="1_2mvui"]
 [ext_resource type="Texture2D" uid="uid://6h0utukuhm8v" path="res://assets/troll/death_0.png" id="2_diqik"]
 [ext_resource type="Texture2D" uid="uid://cd4hfw8mysrji" path="res://assets/troll/death_1.png" id="3_mykfw"]
 [ext_resource type="Texture2D" uid="uid://dahp08ejxy04p" path="res://assets/troll/death_2.png" id="4_3ipb3"]
@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://tuljnwnwbnh5" path="res://assets/troll/walk_3.png" id="10_2fik8"]
 [ext_resource type="Texture2D" uid="uid://dq0sbyqhipipg" path="res://assets/troll/walk_4.png" id="11_ysqi1"]
 [ext_resource type="Texture2D" uid="uid://dvk7l8h63wp4" path="res://assets/troll/walk_5.png" id="12_nctcr"]
-[ext_resource type="AudioStream" path="res://assets/audio/DemonDeath.wav" id="13_death_sound"]
+[ext_resource type="AudioStream" uid="uid://crs4ejwe17f76" path="res://assets/audio/DemonDeath.wav" id="13_death_sound"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_troll"]
 animations = [{

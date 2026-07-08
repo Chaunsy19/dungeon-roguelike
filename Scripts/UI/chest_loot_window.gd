@@ -1,7 +1,7 @@
 extends PanelContainer
 
-const ITEM_DATABASE_SCRIPT := preload("res://Scripts/item_database.gd")
-const LOOT_SLOT_BUTTON_SCRIPT := preload("res://Scripts/loot_slot_button.gd")
+const ITEM_DATABASE_SCRIPT := preload("res://Scripts/UI/item_database.gd")
+const LOOT_SLOT_BUTTON_SCRIPT := preload("res://Scripts/UI/loot_slot_button.gd")
 
 var active_chest: Node = null
 var player: Node = null
